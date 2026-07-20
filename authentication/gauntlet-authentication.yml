@@ -1,0 +1,32 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.gauntlet.xyz/onboarding/credentials
+description: >-
+  The Gauntlet REST API (api.gauntlet.xyz) authenticates every request with a
+  partner-provisioned API key passed as an HTTP Bearer token. The published
+  OpenAPI does not declare securitySchemes, so this profile is captured from the
+  docs Auth & Credentials page; 401 responses are documented across the spec.
+docs: https://docs.gauntlet.xyz/onboarding/credentials
+summary:
+  types: [http]
+  http_schemes: [bearer]
+  api_key_in: [header]
+schemes:
+  - name: bearerAuth
+    type: http
+    scheme: bearer
+    header: Authorization
+    format: "Authorization: Bearer <API_KEY>"
+    description: >-
+      Partner-provisioned API key. After partner approval Gauntlet provisions an
+      API key for your organization. Keys are server-side only — never expose in
+      client-side code, public repos, or version control. Docs recommend separate
+      keys for development, staging, and production, and rotating production
+      credentials every 90 days.
+    provisioning: Partner approval, then Gauntlet provisions a key (docs.gauntlet.xyz/onboarding/sign-up)
+    test_live_separation: none-documented
+    sources: [https://docs.gauntlet.xyz/onboarding/credentials]
+notes: >-
+  On-chain deposit/withdraw flows via @gauntlet-xyz/sdk are authorized by the user's
+  wallet signature (viem), not the API key; the API key authorizes read access to
+  vault/position/analytics data.
