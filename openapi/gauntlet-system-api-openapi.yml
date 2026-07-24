@@ -1,0 +1,83 @@
+openapi: 3.1.0
+info:
+  title: Gauntlet Prices System API
+  description: Gauntlet vault data, user positions, and event analytics API.
+  contact:
+    name: Gauntlet
+    url: https://gauntlet.xyz
+  license:
+    name: ''
+  version: 1.0.0
+tags:
+- name: System
+paths:
+  /health:
+    get:
+      tags:
+      - System
+      summary: Liveness check
+      description: Returns service version + uptime. Use `/health/chains` for indexer freshness per chain.
+      operationId: health
+      responses:
+        '200':
+          description: Service is live
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /health/chains:
+    get:
+      tags:
+      - System
+      summary: Chain sync status
+      description: Returns per-chain indexer sync status with freshness indicators.
+      operationId: chain_sync_status
+      responses:
+        '200':
+          description: Chain sync status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChainSyncStatus'
+components:
+  schemas:
+    ChainSyncStatus:
+      type: object
+      required:
+      - chain_id
+      - latest_block
+      - latest_timestamp
+      - lag_seconds
+      - freshness
+      properties:
+        chain_id:
+          type: integer
+          format: int64
+        freshness:
+          type: string
+        lag_seconds:
+          type: integer
+          format: int64
+        latest_block:
+          type: integer
+          format: int64
+        latest_timestamp:
+          type: integer
+          format: int64
+    HealthResponse:
+      type: object
+      required:
+      - status
+      - version
+      - uptime_seconds
+      properties:
+        status:
+          type: string
+        uptime_seconds:
+          type: integer
+          format: int64
+          minimum: 0
+        version:
+          type: string

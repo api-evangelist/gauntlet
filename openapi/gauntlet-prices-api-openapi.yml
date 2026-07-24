@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: Gauntlet Prices API
+  description: Gauntlet vault data, user positions, and event analytics API.
+  contact:
+    name: Gauntlet
+    url: https://gauntlet.xyz
+  license:
+    name: ''
+  version: 1.0.0
+tags:
+- name: Prices
+paths:
+  /v1/prices:
+    get:
+      tags:
+      - Prices
+      summary: Get latest token price
+      description: 'Returns the latest USD price for a token. Query parameters: `address` (required), `chain_id` (required), `at` (optional ISO 8601 timestamp).'
+      operationId: get_latest_price
+      responses:
+        '200':
+          description: Token price
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LatestPriceResponse'
+        '404':
+          description: Token not found
+        '422':
+          description: Invalid parameters
+        '503':
+          description: Pricing service not configured
+  /v1/prices/timeseries:
+    get:
+      tags:
+      - Prices
+      summary: Get historical token prices
+      description: 'Returns a USD price timeseries for a token. Query parameters: `address` (required), `chain_id` (required), `start` (required ISO 8601), `end` (required ISO 8601), `granularity` (optional: `raw` | `hour` | `day` | `week` | `month`), `limit` (optional, default 1000, max 5000).'
+      operationId: get_price_history
+      responses:
+        '200':
+          description: Price timeseries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeseriesResponse'
+        '422':
+          description: Invalid parameters
+        '503':
+          description: Pricing service not configured
+components:
+  schemas:
+    PriceValue:
+      type: object
+      required:
+      - usd
+      - decimals
+      properties:
+        decimals:
+          type: integer
+          format: int32
+          minimum: 0
+        usd:
+          type: number
+          format: double
+    HistoricalPriceValue:
+      type: object
+      required:
+      - usd
+      properties:
+        usd:
+          type: number
+          format: double
+    TimeseriesPoint:
+      type: object
+      required:
+      - timestamp
+      - price
+      properties:
+        price:
+          $ref: '#/components/schemas/HistoricalPriceValue'
+        timestamp:
+          type: string
+    LatestPriceResponse:
+      type: object
+      required:
+      - address
+      - chain_id
+      - symbol
+      - price
+      - currency
+      - timestamp
+      properties:
+        address:
+          type: string
+        chain_id:
+          type: integer
+          format: int64
+          minimum: 0
+        currency:
+          type: string
+        price:
+          $ref: '#/components/schemas/PriceValue'
+        symbol:
+          type: string
+        timestamp:
+          type: string
+    TimeseriesResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeseriesPoint'

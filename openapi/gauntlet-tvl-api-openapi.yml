@@ -1,0 +1,162 @@
+openapi: 3.1.0
+info:
+  title: Gauntlet Prices TVL API
+  description: Gauntlet vault data, user positions, and event analytics API.
+  contact:
+    name: Gauntlet
+    url: https://gauntlet.xyz
+  license:
+    name: ''
+  version: 1.0.0
+tags:
+- name: TVL
+paths:
+  /v1/tvl:
+    get:
+      tags:
+      - TVL
+      summary: Get live aggregate TVL
+      description: Returns live aggregate Gauntlet TVL composed from indexed Gaia vault data and configured external TVL sources. Source totals are always returned; pass `?include_breakdown=true` for chain and external-source explainability rows.
+      operationId: get_tvl
+      parameters:
+      - name: include_breakdown
+        in: query
+        description: Include chain and external-source TVL breakdown rows.
+        required: false
+        schema:
+          type: boolean
+      - name: include_sources
+        in: query
+        description: Deprecated alias for include_breakdown.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Live aggregate TVL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TvlResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Data source unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    TvlTotal:
+      type: object
+      required:
+      - id
+      - label
+      - tvl
+      - updated_at
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/TvlAmount'
+        updated_at:
+          type: string
+          format: date-time
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    TvlAmount:
+      type: object
+      required:
+      - usd
+      properties:
+        usd:
+          type: string
+    TvlSummary:
+      type: object
+      required:
+      - tvl
+      - updated_at
+      - totals
+      properties:
+        breakdown:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TvlBreakdown'
+        totals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TvlTotal'
+        tvl:
+          $ref: '#/components/schemas/TvlAmount'
+        updated_at:
+          type: string
+          format: date-time
+    TvlBreakdown:
+      type: object
+      required:
+      - id
+      - label
+      - source_id
+      - tvl
+      - updated_at
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        source_id:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/TvlAmount'
+        updated_at:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    TvlResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/TvlSummary'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'

@@ -1,0 +1,582 @@
+openapi: 3.1.0
+info:
+  title: Gauntlet Prices Vaults API
+  description: Gauntlet vault data, user positions, and event analytics API.
+  contact:
+    name: Gauntlet
+    url: https://gauntlet.xyz
+  license:
+    name: ''
+  version: 1.0.0
+tags:
+- name: Vaults
+paths:
+  /v1/vaults:
+    get:
+      tags:
+      - Vaults
+      summary: List Gauntlet-curated vaults
+      description: 'Returns identification-only rows for the admin-curated visible vaults, ordered most-recent-first; pass `?include_hidden=true` for every enabled vault (hidden included, disabled never). Use `/{vault_id}` for current metrics, `/{vault_id}/definition` for the full vault definition, `/{vault_id}/timeseries` for history.
+
+
+        Cursor-paginated, but the default page size is the cap so most callers don''t need to think about it — pass `meta.next_cursor` back as `?next=` only if the result exceeds 1000 vaults.'
+      operationId: list_vaults
+      parameters:
+      - name: next
+        in: query
+        description: Opaque cursor from previous `meta.next_cursor`.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Page size (1–1000, default 1000).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: include_hidden
+        in: query
+        description: Include hidden (enabled but unlisted) vaults alongside visible ones. Disabled vaults are never listed.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: List of vaults
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Invalid cursor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/featured:
+    get:
+      tags:
+      - Vaults
+      summary: List featured vaults
+      description: 'Returns the admin-curated featured shortlist, one card per logical vault in curated order: display name, marketing description, deployed chains (highest-TVL first), supply token, aggregate TVL, and the highest 7/30/90-day APY across deployments. `vault_ids` carries per-deployment `{chainId}:{address}` ids for `/v1/vaults/{vault_id}` links, in the same order as `chains`.'
+      operationId: list_featured_vaults
+      responses:
+        '200':
+          description: Featured vault cards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeaturedVaultsResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Data source unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/{vault_id}:
+    get:
+      tags:
+      - Vaults
+      summary: Get current vault metrics
+      description: Returns the current metrics snapshot for a vault — same metric shape that `/timeseries` emits per point, so this is `current point` and timeseries is `historical points`. The vault's protocol-specific definition (fees, hooks, curator, etc.) lives on `/{vault_id}/definition`.
+      operationId: get_vault
+      parameters:
+      - name: vault_id
+        in: path
+        description: Vault identifier (CAIP-10 `chainId:address`)
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Current vault metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultDetailResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/{vault_id}/definition:
+    get:
+      tags:
+      - Vaults
+      summary: Get vault definition
+      description: 'Returns the vault''s identity + protocol-specific definition: name, owner, numeraire token, hooks, fees, curator, etc., merged inline based on `vault_type`. Aera carries hooks/feeCalculator, Morpho V1/V2 carry curator + WAD-scaled fees, Symbiotic carries identity only.'
+      operationId: get_vault_definition
+      parameters:
+      - name: vault_id
+        in: path
+        description: Vault identifier (CAIP-10 `chainId:address`)
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Vault definition
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/{vault_id}/timeseries:
+    get:
+      tags:
+      - Vaults
+      summary: Get vault timeseries data
+      description: Returns historical metric data points. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Supports date range filtering and cursor pagination — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created with). Defaults to `granularity=day` (one UTC-midnight snapshot per day); `week` returns Monday 00:00 UTC snapshots, `month` returns first-of-month 00:00 UTC snapshots, and `hour` returns the raw hourly cadence. Default page size is 1000.
+      operationId: get_vault_timeseries
+      parameters:
+      - name: vault_id
+        in: path
+        description: Vault identifier
+        required: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: 'Window start: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`).'
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: 'Window end: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`).'
+        required: false
+        schema:
+          type: string
+      - name: next
+        in: query
+        description: Opaque cursor from previous `meta.next_cursor`.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Page size (1–10000, default 1000).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: 'Sort direction: `asc` (default) or `desc`.'
+        required: false
+        schema:
+          type: string
+      - name: granularity
+        in: query
+        description: 'Sampling granularity: `day` (default), `hour`, `week`, or `month`. Day/week/month buckets start at 00:00 UTC; weeks start Monday and months start on the 1st.'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Timeseries data points
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultTimeseriesResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    VaultTimeseriesResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultTimeseriesPoint'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
+    FeaturedVault:
+      type: object
+      required:
+      - slug
+      - name
+      - chains
+      - tvl
+      - vault_ids
+      properties:
+        apy_30d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Highest 30-day APY across the vault's deployments.
+        apy_7d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: 'Highest 7-day APY across the vault''s deployments, fraction
+
+            (0.0573 = 5.73%). `null` while every window is warming up.'
+        apy_90d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Highest 90-day APY across the vault's deployments.
+        chains:
+          type: array
+          items:
+            type: string
+          description: Chain slugs the vault is deployed on, highest-TVL first.
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Curated marketing description; `null` when the curator hasn''t
+
+            written one.'
+        name:
+          type: string
+          description: Curated display name.
+        short_description:
+          type:
+          - string
+          - 'null'
+          description: 'Card-length copy (e.g. "Conservative lending yield with low
+
+            risk"). `null` when the curator hasn''t written any; consumers
+
+            decide whether to fall back to `description`.'
+        slug:
+          type: string
+          description: Admin registry slug for the logical vault (stable identifier).
+        supply_token:
+          type:
+          - string
+          - 'null'
+          description: 'Supply (numeraire) token symbol, from the highest-TVL deployment
+
+            that reports one.'
+        tvl:
+          $ref: '#/components/schemas/CuratedTvl'
+          description: Aggregate TVL across the vault's deployments ("Total Supply").
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: 'Most recent indexer snapshot among the vault''s deployments;
+
+            `null` when no deployment carried a usable timestamp.'
+        vault_ids:
+          type: array
+          items:
+            type: string
+          description: 'Per-deployment API vault ids (`{chainId}:{address}`, same order
+
+            as `chains`) for `/v1/vaults/{vault_id}` links.'
+    VaultDetailResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/VaultDetail'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    CuratedTvl:
+      type: object
+      description: 'USD amount on curated aggregates: decimal string, `null` when the
+
+        pricing service is not configured.'
+      properties:
+        usd:
+          type:
+          - string
+          - 'null'
+    PartialResponseError:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for the isolated item failure.
+        message:
+          type: string
+          description: Human-readable error message.
+        resource_id:
+          type:
+          - string
+          - 'null'
+          description: Resource that failed inside the aggregate response, when known.
+    FeaturedVaultsResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeaturedVault'
+        meta:
+          $ref: '#/components/schemas/ListMeta'
+    VaultTimeseriesPoint:
+      type: object
+      required:
+      - timestamp
+      - tvl
+      - unit_price
+      - total_supply
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        timestamp:
+          type: string
+          format: date-time
+        total_supply:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/AmountPair'
+        unit_price:
+          type: string
+    VaultDetail:
+      type: object
+      required:
+      - vault_id
+      - chain_id
+      - address
+      - vault_type
+      - name
+      - symbol
+      - numeraire_token
+      - metrics
+      properties:
+        address:
+          type: string
+        chain_id:
+          type: integer
+          format: int64
+        metrics:
+          $ref: '#/components/schemas/VaultMetrics'
+        name:
+          type: string
+        numeraire_token:
+          $ref: '#/components/schemas/TokenRef'
+        symbol:
+          type: string
+        vault_id:
+          type: string
+        vault_type:
+          type: string
+    ListMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      - count
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: Rows in this response.
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    AmountPair:
+      type: object
+      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
+
+        `native` is always present; `usd` is JSON null when pricing is unavailable.'
+      required:
+      - native
+      properties:
+        native:
+          type: string
+        usd:
+          type:
+          - string
+          - 'null'
+    VaultMetrics:
+      type: object
+      required:
+      - tvl
+      - unit_price
+      - total_supply
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        as_of:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        total_supply:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/AmountPair'
+        unit_price:
+          type: string
+    TokenRef:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          type: string
+        decimals:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        symbol:
+          type:
+          - string
+          - 'null'
+    TimeseriesMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      - count
+      - limit
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: Number of points in this response.
+        end:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        limit:
+          type: integer
+          format: int64
+          description: Page-size cap actually applied.
+        next_cursor:
+          type:
+          - string
+          - 'null'
+          description: Set when more pages exist; pass back as `?next=`.
+        partial_errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialResponseError'
+          description: Item-scoped failures isolated from an aggregate response.
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+        start:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Window bounds the response covers (echoes the request when set).
