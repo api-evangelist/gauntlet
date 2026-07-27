@@ -1,0 +1,78 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.gauntlet.xyz/ and openapi/gauntlet-openapi-original.json — the
+  cross-cutting request/response conventions that apply to every Gauntlet API
+  endpoint (not any single operation).
+description: >-
+  How the Gauntlet REST API behaves across every operation: authentication style,
+  the meta envelope, cursor pagination, request tracing, data freshness, error
+  envelope, and rate-limit signaling. The v1 API is read-only (all operations are
+  GET), so there is no request-mutation idempotency contract.
+base_url: https://api.gauntlet.xyz
+api_style: REST over HTTPS, JSON responses
+
+authentication:
+  scheme: HTTP Bearer token (partner-provisioned API key)
+  header: "Authorization: Bearer <API_KEY>"
+  docs: https://docs.gauntlet.xyz/onboarding/credentials
+  detail: authentication/gauntlet-authentication.yml
+
+idempotency:
+  supported: false
+  reason: >-
+    The v1 API exposes only GET (read) operations, which are inherently idempotent;
+    the provider documents no Idempotency-Key header because there are no write
+    operations on the REST surface. On-chain writes happen via the SDK/wallet, not
+    the REST API.
+
+pagination:
+  style: cursor
+  applies_to: timeseries and activity list endpoints
+  request_params:
+    order: "asc (default, oldest-first, chart-friendly) | desc (newest-first)"
+    next: "pass meta.next_cursor back as ?next= for the following page"
+  response_fields:
+    meta.next_cursor: opaque cursor for the next page (null when exhausted)
+    meta.limit: page-size cap actually applied
+    meta.count: rows/points in the current response
+  notes: The cursor is bound to the order it was created with.
+
+response_envelope:
+  shape: '{ "data": <payload>, "meta": { "request_id", "refreshed_at", ... } }'
+  meta_fields:
+    request_id: unique id for the response — include when contacting support (request tracing)
+    refreshed_at: RFC3339 timestamp of when the underlying data was last refreshed (freshness signal)
+    count: row/point count (list + timeseries)
+    limit: page size cap (timeseries)
+    next_cursor: pagination cursor (timeseries/activity)
+
+partial_responses:
+  supported: true
+  shape: >-
+    Aggregate endpoints can return per-item failures inline as PartialResponseError
+    objects ({ code, message, resource_id }) rather than failing the whole request.
+
+request_tracing:
+  request_id_field: meta.request_id
+
+versioning:
+  scheme: uri-path
+  current: v1
+  detail: lifecycle/gauntlet-lifecycle.yml
+
+identifiers:
+  vault_id: >-
+    API vault ids are CAIP-10 ("{chainId}:{address}"); the SDK converts to/from
+    manifest vault ids with apiVaultIdFromVaultId / vaultIdFromApiVaultId.
+  monetary_values: human-unit decimal strings (convert exactly with decimalToBigInt / sharesToBigInt)
+
+error_envelope:
+  media_type: application/json
+  shape: '{ "error": { "code": string, "message": string, "details": any } }'
+  detail: errors/gauntlet-problem-types.yml
+
+rate_limiting:
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+  throttled_status: 429
+  detail: rate-limits/gauntlet-rate-limits.yml

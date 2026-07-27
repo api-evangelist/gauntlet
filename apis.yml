@@ -1,24 +1,161 @@
 aid: gauntlet
 name: Gauntlet
-description: 'Gauntlet is a company surfaced as a portfolio company of paradigm, polychain, ribbit-capital
-  and added to the API Evangelist network as a stub for enrichment. Sector: crypto-data. This profile
-  is a lead awaiting the enrichment pipeline.'
+description: >-
+  Gauntlet (Gauntlet Networks, Inc.) is a crypto risk-management and yield-curation
+  firm that runs agent-based economic simulations to optimize risk, incentives, and
+  capital efficiency for DeFi protocols, and curates 80+ institutional-grade yield
+  vaults across Aera, Morpho, Kamino, Drift, and Symbiotic. For developers it ships
+  the Gauntlet Developer Kit: a public read-only REST API at api.gauntlet.xyz (v1)
+  exposing vault metrics, user positions with PnL, wallet activity, TVL, and token
+  prices, plus an official TypeScript SDK (@gauntlet-xyz/sdk) for on-chain deposits,
+  withdrawals, and ERC-8021 attribution. Authentication is a partner-provisioned
+  Bearer API key. Backed by Paradigm, Polychain, and Ribbit Capital.
 url: https://raw.githubusercontent.com/api-evangelist/gauntlet/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://cdn.prod.website-files.com/648bdc0d4b8ce322f27da0af/68013f075b92cb9c2d2c6aef_gauntlet-thumbnail.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - paradigm
 - polychain
 - ribbit-capital
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: enrichment-pipeline
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Crypto Data
-apis: []
+- DeFi
+- Risk Management
+- Yield
+- Vaults
+- Blockchain
+- Web3
+- Financial Modeling
+apis:
+- aid: gauntlet:gauntlet-prices-api
+  name: Gauntlet Prices API
+  description: The Prices API from Gauntlet — 2 operation(s) for prices.
+  humanURL: https://docs.gauntlet.xyz/
+  baseURL: https://api.gauntlet.xyz
+  tags:
+  - Prices
+  properties:
+  - type: OpenAPI
+    url: openapi/gauntlet-prices-api-openapi.yml
+  - type: APIReference
+    url: https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults
+  - type: Authentication
+    url: authentication/gauntlet-authentication.yml
+  - type: RateLimits
+    url: rate-limits/gauntlet-rate-limits.yml
+  - type: Conventions
+    url: conventions/gauntlet-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gauntlet-problem-types.yml
+  - type: DataModel
+    url: data-model/gauntlet-data-model.yml
+- aid: gauntlet:gauntlet-system-api
+  name: Gauntlet System API
+  description: The System API from Gauntlet — 2 operation(s) for system.
+  humanURL: https://docs.gauntlet.xyz/
+  baseURL: https://api.gauntlet.xyz
+  tags:
+  - System
+  properties:
+  - type: OpenAPI
+    url: openapi/gauntlet-system-api-openapi.yml
+  - type: APIReference
+    url: https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults
+  - type: Authentication
+    url: authentication/gauntlet-authentication.yml
+  - type: RateLimits
+    url: rate-limits/gauntlet-rate-limits.yml
+  - type: Conventions
+    url: conventions/gauntlet-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gauntlet-problem-types.yml
+  - type: DataModel
+    url: data-model/gauntlet-data-model.yml
+- aid: gauntlet:gauntlet-tvl-api
+  name: Gauntlet TVL API
+  description: The TVL API from Gauntlet — 1 operation(s) for tvl.
+  humanURL: https://docs.gauntlet.xyz/
+  baseURL: https://api.gauntlet.xyz
+  tags:
+  - TVL
+  properties:
+  - type: OpenAPI
+    url: openapi/gauntlet-tvl-api-openapi.yml
+  - type: APIReference
+    url: https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults
+  - type: Authentication
+    url: authentication/gauntlet-authentication.yml
+  - type: RateLimits
+    url: rate-limits/gauntlet-rate-limits.yml
+  - type: Conventions
+    url: conventions/gauntlet-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gauntlet-problem-types.yml
+  - type: DataModel
+    url: data-model/gauntlet-data-model.yml
+- aid: gauntlet:gauntlet-users-api
+  name: Gauntlet Users API
+  description: The Users API from Gauntlet — 4 operation(s) for users.
+  humanURL: https://docs.gauntlet.xyz/
+  baseURL: https://api.gauntlet.xyz
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/gauntlet-users-api-openapi.yml
+  - type: APIReference
+    url: https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults
+  - type: Authentication
+    url: authentication/gauntlet-authentication.yml
+  - type: RateLimits
+    url: rate-limits/gauntlet-rate-limits.yml
+  - type: Conventions
+    url: conventions/gauntlet-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gauntlet-problem-types.yml
+  - type: DataModel
+    url: data-model/gauntlet-data-model.yml
+- aid: gauntlet:gauntlet-vaults-api
+  name: Gauntlet Vaults API
+  description: The Vaults API from Gauntlet — 5 operation(s) for vaults.
+  humanURL: https://docs.gauntlet.xyz/
+  baseURL: https://api.gauntlet.xyz
+  tags:
+  - Vaults
+  properties:
+  - type: OpenAPI
+    url: openapi/gauntlet-vaults-api-openapi.yml
+  - type: APIReference
+    url: https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults
+  - type: Authentication
+    url: authentication/gauntlet-authentication.yml
+  - type: RateLimits
+    url: rate-limits/gauntlet-rate-limits.yml
+  - type: Conventions
+    url: conventions/gauntlet-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gauntlet-problem-types.yml
+  - type: DataModel
+    url: data-model/gauntlet-data-model.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -27,3 +164,64 @@ maintainers:
 common:
 - type: Website
   url: https://www.gauntlet.xyz
+- type: DeveloperPortal
+  url: https://docs.gauntlet.xyz/
+- type: Documentation
+  url: https://docs.gauntlet.xyz/
+- type: APIReference
+  url: https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults
+- type: GettingStarted
+  url: https://docs.gauntlet.xyz/onboarding/quickstart
+- type: Quickstart
+  url: https://docs.gauntlet.xyz/onboarding/quickstart
+- type: SignUp
+  url: https://docs.gauntlet.xyz/onboarding/sign-up
+- type: Support
+  url: https://docs.gauntlet.xyz/onboarding/support
+- type: Blog
+  url: https://www.gauntlet.xyz/resources
+- type: GitHubOrganization
+  url: https://github.com/Gauntlet-xyz
+- type: StatusPage
+  url: https://status.gauntlet.xyz
+- type: TermsOfService
+  url: https://www.gauntlet.xyz/tos
+- type: PrivacyPolicy
+  url: https://www.gauntlet.xyz/privacy-policy
+- type: Packages
+  url: packages/gauntlet-packages.yml
+- type: SDKs
+  url: packages/gauntlet-packages.yml
+- type: Authentication
+  url: authentication/gauntlet-authentication.yml
+- type: RateLimits
+  url: rate-limits/gauntlet-rate-limits.yml
+- type: Conventions
+  url: conventions/gauntlet-conventions.yml
+- type: ErrorCatalog
+  url: errors/gauntlet-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/gauntlet-lifecycle.yml
+- type: Conformance
+  url: conformance/gauntlet-conformance.yml
+- type: DataModel
+  url: data-model/gauntlet-data-model.yml
+- type: LLMsTxt
+  url: llms/gauntlet-llms.txt
+- type: MCPServer
+  url: mcp/gauntlet-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/gauntlet-agentic-access.yml
+- type: VulnerabilityDisclosure
+  url: security/gauntlet-vulnerability-disclosure.yml
+- type: Security
+  url: https://docs.gauntlet.xyz/guides/concepts/security
+- type: DomainSecurity
+  url: security/gauntlet-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

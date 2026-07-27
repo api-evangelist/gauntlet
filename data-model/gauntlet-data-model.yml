@@ -1,0 +1,32 @@
+generated: '2026-07-19'
+method: derived
+source: >-
+  Derived from the component schemas and path parameters in
+  openapi/gauntlet-openapi-original.json (VaultDetail, VaultMetrics, UserPosition,
+  UserActivity, TokenRef, Tvl*, *Timeseries*) and the object descriptions in the
+  Gauntlet API reference (docs.gauntlet.xyz/api-reference).
+docs: https://docs.gauntlet.xyz/api-reference
+notation: >-
+  relationships use has_one / has_many / belongs_to with the reference field name;
+  direction is from the entity that owns the reference. API vault ids are CAIP-10,
+  formatted as chainId:address.
+entities:
+  - {name: Vault, id: vault_id (CAIP-10 chainId:address), domain: vaults, description: A Gauntlet-curated vault; carries current metrics and a protocol-specific definition (Aera / Morpho V1/V2 / Kamino / Drift / Symbiotic).}
+  - {name: VaultMetrics, id: null, domain: vaults, description: Current or historical metric snapshot for a vault (TVL, APY, unit price); one current point plus timeseries history.}
+  - {name: VaultDefinition, id: null, domain: vaults, description: A vault's identity + protocol-specific definition — name, owner, numeraire token, hooks, fees, curator — merged by vault_type.}
+  - {name: User, id: wallet_address, domain: users, description: A wallet address holding positions across vaults.}
+  - {name: UserPosition, id: null, domain: users, description: A wallet's position in a vault — value, cost basis, PnL, ROI; current snapshot plus timeseries history.}
+  - {name: UserActivity, id: null, domain: users, description: Immutable on-chain event log entry (deposit/withdrawal/transfer) affecting a wallet's vault position.}
+  - {name: Token, id: address+chain, domain: prices, description: An ERC-20 token referenced by vaults and prices (TokenRef).}
+  - {name: Price, id: null, domain: prices, description: Latest and historical token price points.}
+  - {name: Tvl, id: null, domain: analytics, description: Live aggregate total value locked, with per-vault/per-chain breakdowns.}
+relationships:
+  - {from: Vault, to: VaultMetrics, kind: has_many, via: vault_id}
+  - {from: Vault, to: VaultDefinition, kind: has_one, via: vault_id}
+  - {from: Vault, to: Token, kind: belongs_to, via: numeraire}
+  - {from: User, to: UserPosition, kind: has_many, via: wallet_address}
+  - {from: User, to: UserActivity, kind: has_many, via: wallet_address}
+  - {from: UserPosition, to: Vault, kind: belongs_to, via: vault_id}
+  - {from: UserActivity, to: Vault, kind: belongs_to, via: vault_id}
+  - {from: Price, to: Token, kind: belongs_to, via: token}
+  - {from: Tvl, to: Vault, kind: has_many, via: breakdown}

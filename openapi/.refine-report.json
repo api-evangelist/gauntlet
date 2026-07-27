@@ -1,0 +1,22 @@
+{
+  "provider": "gauntlet",
+  "sources": [
+    "gauntlet-prices-api-openapi.yml",
+    "gauntlet-system-api-openapi.yml",
+    "gauntlet-tvl-api-openapi.yml",
+    "gauntlet-users-api-openapi.yml",
+    "gauntlet-vaults-api-openapi.yml"
+  ],
+  "outputs": [
+    "gauntlet-prices-api-openapi.yml",
+    "gauntlet-system-api-openapi.yml",
+    "gauntlet-tvl-api-openapi.yml",
+    "gauntlet-users-api-openapi.yml",
+    "gauntlet-vaults-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

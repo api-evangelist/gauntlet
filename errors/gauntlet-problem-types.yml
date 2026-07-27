@@ -1,0 +1,38 @@
+generated: '2026-07-19'
+method: derived
+format: custom-json
+source: >-
+  Derived from the 4xx/5xx responses in openapi/gauntlet-openapi-original.json,
+  which reference the shared ErrorResponse/ErrorBody schema. Gauntlet does NOT use
+  RFC 9457 application/problem+json — every error is returned as
+  {"error": {"code", "message", "details"}} with application/json.
+envelope:
+  media_type: application/json
+  shape: '{ "error": { "code": string, "message": string, "details": any } }'
+  fields:
+    code: Machine-readable error code (e.g. NOT_FOUND, UNAUTHORIZED)
+    message: Human-readable error message
+    details: Optional structured detail
+partial_response:
+  note: >-
+    Aggregate endpoints may embed per-item failures as PartialResponseError
+    ({ code, message, resource_id }) inside an otherwise 200 response instead of
+    failing the whole request.
+problems:
+  - status: 401
+    code: UNAUTHORIZED
+    title: Unauthorized
+    meaning: Missing or invalid API key (Authorization Bearer token).
+    remediation: Provide a valid partner-provisioned API key in the Authorization header.
+  - status: 404
+    code: NOT_FOUND
+    title: Not found
+    meaning: The requested vault, position, or resource does not exist or is not indexed.
+  - status: 422
+    title: Unprocessable entity
+    meaning: Request validation failed (invalid or malformed query parameters).
+    remediation: Fix the invalid parameters per the endpoint schema and retry.
+  - status: 503
+    title: Service unavailable
+    meaning: Upstream data source or chain indexer temporarily unavailable (may accompany partial results).
+    remediation: Retry with backoff; check https://status.gauntlet.xyz for incidents.

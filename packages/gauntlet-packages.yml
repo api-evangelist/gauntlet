@@ -1,0 +1,25 @@
+generated: '2026-07-19'
+method: searched
+source: https://www.npmjs.com/package/@gauntlet-xyz/sdk
+description: >-
+  First-party Gauntlet client libraries. Verified against the public npm registry
+  (registry.npmjs.org) and the Gauntlet SDK repository and docs. The official
+  TypeScript SDK wraps both the on-chain vault flows (deposits/withdrawals via viem)
+  and the typed Gauntlet REST API client. No first-party Python/Go/Ruby/Java/.NET
+  packages were found on PyPI, pkg.go.dev, RubyGems, Maven Central, NuGet, Packagist,
+  or crates.io as of the fetch date.
+packages:
+  - language: typescript
+    registry: npm
+    name: "@gauntlet-xyz/sdk"
+    url: https://www.npmjs.com/package/@gauntlet-xyz/sdk
+    source: https://github.com/Gauntlet-xyz/sdk
+    install: npm install @gauntlet-xyz/sdk viem
+    version: 2.1.0
+    peer_dependencies: [viem]
+    official: true
+    description: >-
+      Official Gauntlet SDK for interacting with Gauntlet-managed vaults — deposits,
+      withdrawals, on-chain ERC-8021 attribution (builder codes), and a typed client
+      for the Gauntlet REST API (vaults, positions, PnL, activity). Ships a Privy
+      helper subpath (@gauntlet-xyz/sdk/privy) and an EVM subpath (@gauntlet-xyz/sdk/evm).

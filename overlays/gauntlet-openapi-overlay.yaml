@@ -1,0 +1,29 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Gauntlet API
+  version: 1.0.0
+extends: openapi/gauntlet-openapi-original.json
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-rating: 3
+      x-apievangelist-notes: >-
+        Read-only vault/position/analytics API. Well-shaped OpenAPI 3.1 with a
+        consistent meta envelope and cursor pagination; the two gaps captured
+        below are the absent servers[] entry and the undeclared Bearer security
+        scheme (documented in docs but missing from the spec).
+  - target: $
+    update:
+      servers:
+        - url: https://api.gauntlet.xyz
+          description: Production (added by API Evangelist; the harvested spec omits servers[])
+  - target: $.components
+    update:
+      securitySchemes:
+        bearerAuth:
+          type: http
+          scheme: bearer
+          description: >-
+            Partner-provisioned API key passed as Authorization Bearer token.
+            Documented at docs.gauntlet.xyz/onboarding/credentials but not declared
+            in the harvested OpenAPI; added here so tooling can model auth.

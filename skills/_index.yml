@@ -1,0 +1,23 @@
+generated: '2026-07-19'
+method: generated
+source: >-
+  Packaged Agent Skills generated from Gauntlet's OpenAPI (openapi/gauntlet-openapi-original.json).
+  Every step is grounded in an operationId verified verbatim in the spec; cross-cutting
+  rules cite ../conventions/, ../errors/, ../authentication/ and ../rate-limits/.
+  gauntlet-sdk-context.md is the provider-published SDK agent-context doc, saved verbatim
+  from https://docs.gauntlet.xyz/agents/context.md.
+skills:
+  - file: gauntlet-discover-vaults.md
+    name: Discover and compare Gauntlet vaults
+    method: generated
+    api: openapi/gauntlet-openapi-original.json
+    operations: [list_vaults, list_featured_vaults, get_vault, get_vault_definition, get_vault_timeseries]
+  - file: gauntlet-track-user-position.md
+    name: Track a wallet's Gauntlet positions and returns
+    method: generated
+    api: openapi/gauntlet-openapi-original.json
+    operations: [get_user_all_positions, get_user_vault_position, get_user_vault_position_timeseries, get_user_activity]
+  - file: gauntlet-sdk-context.md
+    name: Gauntlet SDK CONTEXT.md (provider-published)
+    method: searched
+    source: https://docs.gauntlet.xyz/agents/context.md

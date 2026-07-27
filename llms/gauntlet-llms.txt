@@ -1,0 +1,56 @@
+# Gauntlet Docs
+
+## Docs
+
+- [CONTEXT.md](https://docs.gauntlet.xyz/agents/context.md): Copy this into your LLM context window for accurate, grounded answers about the Gauntlet SDK.
+- [Get user position in a specific vault](https://docs.gauntlet.xyz/api-reference/users/get-user-position-in-a-specific-vault.md): Returns the current position snapshot for a wallet in a single vault. Historical points live on `/positions/{vault_id}/timeseries`.
+- [Get user position timeseries for a specific vault](https://docs.gauntlet.xyz/api-reference/users/get-user-position-timeseries-for-a-specific-vault.md): Returns historical value and ROI data for a single vault position. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Cursor-paginated — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created with).…
+- [Get user wallet activity (deposits, withdrawals, transfers)](https://docs.gauntlet.xyz/api-reference/users/get-user-wallet-activity-deposits-withdrawals-transfers.md): Immutable log of on-chain events that affected the wallet's vault position. Each row is a frozen-in-time record; rows never mutate after emission.
+- [Get current vault metrics](https://docs.gauntlet.xyz/api-reference/vaults/get-current-vault-metrics.md): Returns the current metrics snapshot for a vault — same metric shape that `/timeseries` emits per point, so this is `current point` and timeseries is `historical points`. The vault's protocol-specific definition (fees, hooks, curator, etc.) lives on `/{vault_id}/definition`.
+- [Get vault definition](https://docs.gauntlet.xyz/api-reference/vaults/get-vault-definition.md): Returns the vault's identity + protocol-specific definition: name, owner, numeraire token, hooks, fees, curator, etc., merged inline based on `vault_type`. Aera carries hooks/feeCalculator, Morpho V1/V2 carry curator + WAD-scaled fees, Symbiotic carries identity only.
+- [Get vault timeseries data](https://docs.gauntlet.xyz/api-reference/vaults/get-vault-timeseries-data.md): Returns historical metric data points. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Supports date range filtering and cursor pagination — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created…
+- [List Gauntlet-curated vaults](https://docs.gauntlet.xyz/api-reference/vaults/list-gauntlet-curated-vaults.md): Returns identification-only rows for every Gauntlet vault the indexer knows about, ordered most-recent-first. Use `/{vault_id}` for current metrics, `/{vault_id}/definition` for the full vault definition, `/{vault_id}/timeseries` for history.
+- [Attribution with SDK](https://docs.gauntlet.xyz/attribution/attribution-with-sdk.md): How the Gauntlet SDK tracks on-chain volume back to your integration using ERC-8021 builder codes, and how to monitor attributed activity.
+- [Attribution without SDK](https://docs.gauntlet.xyz/attribution/attribution-without-sdk.md): Manually add deposit and withdrawal attribution using an embedded wallet or wagmi, without installing the Gauntlet SDK.
+- [BaseVault](https://docs.gauntlet.xyz/contract-reference/base-vault.md): Core vault contract -- guardian operations, Merkle verification, hooks, and pause
+- [Deployed Vaults](https://docs.gauntlet.xyz/contract-reference/deployed-vaults.md): Production vault deployments — addresses, provisioners, calculators, and accepted tokens
+- [Factory Addresses](https://docs.gauntlet.xyz/contract-reference/factory-addresses.md): Aera V3 deployment factory addresses by chain and factory type
+- [Fee Splitters](https://docs.gauntlet.xyz/contract-reference/fee-splitters.md): Reference home for contracts that split fees or revenue across multiple recipients.
+- [FeeVault](https://docs.gauntlet.xyz/contract-reference/fee-vault.md): Fee accrual, reporting, and distribution for vault guardians and operators
+- [Hook Interfaces](https://docs.gauntlet.xyz/contract-reference/hooks.md): Hook interfaces for extending vault behavior at lifecycle points
+- [Investment Contracts](https://docs.gauntlet.xyz/contract-reference/investment-contracts.md): Reference home for other Gauntlet-managed investment, adapter, or accounting contracts.
+- [Morpho Adapters](https://docs.gauntlet.xyz/contract-reference/morpho-adapters.md): Reference home for Gauntlet contracts that connect vaults or strategies to Morpho.
+- [MultiDepositorVault](https://docs.gauntlet.xyz/contract-reference/multi-depositor-vault.md): Multi-depositor vault with order solving, tokenized vault units, and price reporting
+- [Periphery Contracts](https://docs.gauntlet.xyz/contract-reference/periphery.md): Supporting infrastructure -- OracleRegistry, fee calculators, and utilities
+- [Provisioner](https://docs.gauntlet.xyz/contract-reference/provisioner.md): Depositor-facing entry and exit flows for multi-depositor vaults
+- [SingleDepositorVault](https://docs.gauntlet.xyz/contract-reference/single-depositor-vault.md): Single-depositor vault with direct deposit, withdraw, and execute capabilities
+- [Curation](https://docs.gauntlet.xyz/guides/concepts/curation.md): How risk tiers and market selection affect the vaults your users interact with
+- [Glossary](https://docs.gauntlet.xyz/guides/concepts/glossary.md): Key terms for integrating with Gauntlet vault infrastructure
+- [Security](https://docs.gauntlet.xyz/guides/concepts/security.md): Audits, trust assumptions, and security properties for partner compliance and due diligence
+- [Aera V2 (Deprecated)](https://docs.gauntlet.xyz/guides/concepts/supported-protocols/aera-v2.md): Legacy vault protocol, now replaced by Aera V3
+- [Aera V3 Cross-Chain](https://docs.gauntlet.xyz/guides/concepts/supported-protocols/aera-v3/cross-chain.md): How Aera V3 enables multichain deposits and cross-chain yield deployment
+- [Aera V3 Guardian Model](https://docs.gauntlet.xyz/guides/concepts/supported-protocols/aera-v3/guardian-model.md): How guardians manage vault operations in the Aera V3 protocol
+- [Aera V3 Hooks](https://docs.gauntlet.xyz/guides/concepts/supported-protocols/aera-v3/hooks.md): How the hook system extends vault behavior in Aera V3
+- [Aera V3](https://docs.gauntlet.xyz/guides/concepts/supported-protocols/aera-v3/overview.md): How Gauntlet integrates Aera V3 and what partners need to know
+- [Vault Types](https://docs.gauntlet.xyz/guides/concepts/vault-types.md): Single-depositor and multi-depositor vaults -- which type fits your integration
+- [Deposit Your First Dollar](https://docs.gauntlet.xyz/guides/developer/earn/deposits-and-withdrawals.md): Deposit 1 USDC into gtUSDa on Base using the SDK, then confirm through the API.
+- [Discover Top-Performing Vaults](https://docs.gauntlet.xyz/guides/developer/earn/displaying-data.md): Use the SDK or API to find, filter, and compare Gauntlet vaults — shown with gtUSDa on Base.
+- [Show User's Return](https://docs.gauntlet.xyz/guides/developer/earn/show-users-return.md): Show a user's gtUSDa position, ROI over time, and recent activity using the SDK or API.
+- [Custom Hooks](https://docs.gauntlet.xyz/guides/guardian/custom-hooks.md): Building and deploying custom hooks for Aera V3 vaults
+- [Multi-Depositor Vaults](https://docs.gauntlet.xyz/guides/guardian/multi-depositor-vaults.md): Operating multi-depositor vaults as a guardian -- order solving, price reporting, fee reporting, transfer hooks, and emergency procedures
+- [Single-Depositor Vaults](https://docs.gauntlet.xyz/guides/guardian/single-depositor-vaults.md): Operating single-depositor vaults as a guardian -- setup, strategy execution, fee reporting, and emergency procedures
+- [Go-Live Checklist](https://docs.gauntlet.xyz/integrate/go-live.md): Pre-launch validation checklist for partner integrations with Gauntlet vaults
+- [Use Cases](https://docs.gauntlet.xyz/integrate/index.md): Four use cases that cover a complete Gauntlet integration: discover vaults, deposit, show returns, and track attribution.
+- [Auth & Credentials](https://docs.gauntlet.xyz/onboarding/credentials.md): Get your API key and start making authenticated requests.
+- [Overview](https://docs.gauntlet.xyz/onboarding/index.md): The Gauntlet Developer Kit is the easiest way to integrate with DeFi yield — add curated, institutional-grade yield to your app with a single SDK and API.
+- [Quick Start](https://docs.gauntlet.xyz/onboarding/quickstart.md): Deposit into a Gauntlet vault in minutes using the SDK.
+- [Request Access](https://docs.gauntlet.xyz/onboarding/sign-up.md): How to request Gauntlet API access for your organization — the approval process, what to expect, and next steps.
+- [Support & Help](https://docs.gauntlet.xyz/onboarding/support.md): How to get help with your Gauntlet integration: contact channels, what to include in requests, escalation paths, and documentation resources.
+- [Examples](https://docs.gauntlet.xyz/sdk/examples.md): End-to-end SDK examples for vault discovery, deposits, withdrawals, positions, and error handling.
+- [Installation](https://docs.gauntlet.xyz/sdk/installation.md): Install the Gauntlet SDK and configure your project.
+- [SDK Overview](https://docs.gauntlet.xyz/sdk/overview.md): Use the Gauntlet SDK for vault discovery, deposits, withdrawals, user positions, and attribution — all from one client.
+- [SDK Reference](https://docs.gauntlet.xyz/sdk/reference.md): Constructor, data methods, transaction methods, result shapes, and errors for the Gauntlet SDK.
+
+## OpenAPI Specs
+
+- [openapi](https://docs.gauntlet.xyz/openapi.json)

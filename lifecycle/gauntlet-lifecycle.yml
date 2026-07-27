@@ -1,0 +1,19 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.gauntlet.xyz/ and https://status.gauntlet.xyz
+description: >-
+  Versioning, status, and deprecation posture for the Gauntlet API and vault
+  infrastructure, from the developer docs and the public status page.
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://docs.gauntlet.xyz/
+status_page: https://status.gauntlet.xyz
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: >-
+    No formal API deprecation policy (Sunset/Deprecation headers) is documented for
+    the REST API. At the protocol layer, Aera V2 is marked deprecated and superseded
+    by Aera V3 (docs.gauntlet.xyz/guides/concepts/supported-protocols/aera-v2).
+deprecated_operations: []
