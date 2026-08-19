@@ -2,58 +2,61 @@ generated: '2026-07-19'
 method: derived
 status: candidate
 source: openapi/gauntlet-openapi-original.json
-description: >-
-  Candidate MCP tool list derived one-to-one from the 14 Gauntlet REST API v1
-  operations. Gauntlet does not publish an official hosted or stdio MCP server as
-  of the fetch date (checked docs.gauntlet.xyz, the Gauntlet-xyz GitHub org, and
-  the npm @modelcontextprotocol scope). This is a governance starting point, not a
-  provider-operated server. Auth would be the Bearer API key (see
-  authentication/gauntlet-authentication.yml).
+description: Candidate MCP tool list derived one-to-one from the 14 Gauntlet REST API v1 operations. Gauntlet
+  does not publish an official hosted or stdio MCP server as of the fetch date (checked docs.gauntlet.xyz,
+  the Gauntlet-xyz GitHub org, and the npm @modelcontextprotocol scope). This is a governance starting
+  point, not a provider-operated server. Auth would be the Bearer API key (see authentication/gauntlet-authentication.yml).
 server:
   name: gauntlet
   transport: http
   url: null
   auth: bearer
 tools:
-  - name: health
-    description: Liveness check
-    source_operation: openapi/gauntlet-openapi-original.json#health
-  - name: chain_sync_status
-    description: Chain sync status
-    source_operation: openapi/gauntlet-openapi-original.json#chain_sync_status
-  - name: get_latest_price
-    description: Get latest token price
-    source_operation: openapi/gauntlet-openapi-original.json#get_latest_price
-  - name: get_price_history
-    description: Get historical token prices
-    source_operation: openapi/gauntlet-openapi-original.json#get_price_history
-  - name: get_tvl
-    description: Get live aggregate TVL
-    source_operation: openapi/gauntlet-openapi-original.json#get_tvl
-  - name: get_user_activity
-    description: Get user wallet activity (deposits, withdrawals, transfers)
-    source_operation: openapi/gauntlet-openapi-original.json#get_user_activity
-  - name: get_user_all_positions
-    description: Get all current positions for a wallet
-    source_operation: openapi/gauntlet-openapi-original.json#get_user_all_positions
-  - name: get_user_vault_position
-    description: Get user position in a specific vault
-    source_operation: openapi/gauntlet-openapi-original.json#get_user_vault_position
-  - name: get_user_vault_position_timeseries
-    description: Get user position timeseries for a specific vault
-    source_operation: openapi/gauntlet-openapi-original.json#get_user_vault_position_timeseries
-  - name: list_vaults
-    description: List Gauntlet-curated vaults
-    source_operation: openapi/gauntlet-openapi-original.json#list_vaults
-  - name: list_featured_vaults
-    description: List featured vaults
-    source_operation: openapi/gauntlet-openapi-original.json#list_featured_vaults
-  - name: get_vault
-    description: Get current vault metrics
-    source_operation: openapi/gauntlet-openapi-original.json#get_vault
-  - name: get_vault_definition
-    description: Get vault definition
-    source_operation: openapi/gauntlet-openapi-original.json#get_vault_definition
-  - name: get_vault_timeseries
-    description: Get vault timeseries data
-    source_operation: openapi/gauntlet-openapi-original.json#get_vault_timeseries
+- name: health
+  description: Liveness check
+  source_operation: openapi/gauntlet-openapi-original.json#health
+- name: chain_sync_status
+  description: Chain sync status
+  source_operation: openapi/gauntlet-openapi-original.json#chain_sync_status
+- name: get_latest_price
+  description: Get latest token price
+  source_operation: openapi/gauntlet-openapi-original.json#get_latest_price
+- name: get_price_history
+  description: Get historical token prices
+  source_operation: openapi/gauntlet-openapi-original.json#get_price_history
+- name: get_tvl
+  description: Get live aggregate TVL
+  source_operation: openapi/gauntlet-openapi-original.json#get_tvl
+- name: get_user_activity
+  description: Get user wallet activity (deposits, withdrawals, transfers)
+  source_operation: openapi/gauntlet-openapi-original.json#get_user_activity
+- name: get_user_all_positions
+  description: Get all current positions for a wallet
+  source_operation: openapi/gauntlet-openapi-original.json#get_user_all_positions
+- name: get_user_vault_position
+  description: Get user position in a specific vault
+  source_operation: openapi/gauntlet-openapi-original.json#get_user_vault_position
+- name: get_user_vault_position_timeseries
+  description: Get user position timeseries for a specific vault
+  source_operation: openapi/gauntlet-openapi-original.json#get_user_vault_position_timeseries
+- name: list_vaults
+  description: List Gauntlet-curated vaults
+  source_operation: openapi/gauntlet-openapi-original.json#list_vaults
+- name: list_featured_vaults
+  description: List featured vaults
+  source_operation: openapi/gauntlet-openapi-original.json#list_featured_vaults
+- name: get_vault
+  description: Get current vault metrics
+  source_operation: openapi/gauntlet-openapi-original.json#get_vault
+- name: get_vault_definition
+  description: Get vault definition
+  source_operation: openapi/gauntlet-openapi-original.json#get_vault_definition
+- name: get_vault_timeseries
+  description: Get vault timeseries data
+  source_operation: openapi/gauntlet-openapi-original.json#get_vault_timeseries
+deployment:
+  mode: none
+  verified: derived
+  tools: 14
+  checked: '2026-08-12'
+  source: catalog MCP census

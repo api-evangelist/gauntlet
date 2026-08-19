@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Gauntlet Prices System API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "System",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Liveness check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          },
+          "docs": "Returns service version + uptime. Use `/health/chains` for indexer freshness per chain."
+        },
+        {
+          "info": {
+            "name": "Chain sync status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health/chains"
+          },
+          "docs": "Returns per-chain indexer sync status with freshness indicators."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

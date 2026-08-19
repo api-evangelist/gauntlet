@@ -1,0 +1,216 @@
+{
+  "item": [
+    {
+      "id": "c643c282-6cee-409e-9151-feda320a18cd",
+      "name": "TVL",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "39117bce-2fcb-45af-a10e-27cbb0de863d",
+          "name": "Get live aggregate TVL",
+          "request": {
+            "name": "Get live aggregate TVL",
+            "description": {
+              "content": "Returns live aggregate Gauntlet TVL composed from indexed Gaia vault data and configured external TVL sources. Source totals are always returned; pass `?include_breakdown=true` for chain and external-source explainability rows.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tvl"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "include_breakdown",
+                  "value": "<boolean>",
+                  "description": "Include chain and external-source TVL breakdown rows."
+                },
+                {
+                  "disabled": false,
+                  "key": "include_sources",
+                  "value": "<boolean>",
+                  "description": "Deprecated alias for include_breakdown."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9d69414a-bd64-433c-8903-cf7f21daeaaa",
+              "name": "Live aggregate TVL",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tvl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_breakdown",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "include_sources",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1998-02-21T07:11:54.071Z\"\n  },\n  \"data\": {\n    \"tvl\": {\n      \"usd\": \"string\"\n    },\n    \"updated_at\": \"2025-03-07T05:53:26.396Z\",\n    \"totals\": [\n      {\n        \"id\": \"string\",\n        \"label\": \"string\",\n        \"tvl\": {\n          \"usd\": \"string\"\n        },\n        \"updated_at\": \"1947-06-06T02:41:31.101Z\"\n      },\n      {\n        \"id\": \"string\",\n        \"label\": \"string\",\n        \"tvl\": {\n          \"usd\": \"string\"\n        },\n        \"updated_at\": \"1968-07-09T13:04:26.293Z\"\n      }\n    ],\n    \"breakdown\": [\n      {\n        \"id\": \"string\",\n        \"label\": \"string\",\n        \"source_id\": \"string\",\n        \"tvl\": {\n          \"usd\": \"string\"\n        },\n        \"updated_at\": \"1996-02-05T07:57:39.553Z\"\n      },\n      {\n        \"id\": \"string\",\n        \"label\": \"string\",\n        \"source_id\": \"string\",\n        \"tvl\": {\n          \"usd\": \"string\"\n        },\n        \"updated_at\": \"1979-11-19T08:56:02.847Z\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5f3f32e0-975a-4215-82d9-6f9dab70c024",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tvl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_breakdown",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "include_sources",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "81ba9e14-a29c-4d96-8e64-a1a45ff46894",
+              "name": "Data source unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tvl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_breakdown",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "include_sources",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "af1fb957-a809-45fb-914b-1edcb926e727",
+    "name": "Gauntlet Prices TVL API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Gauntlet vault data, user positions, and event analytics API.\n\nContact Support:\n Name: Gauntlet",
+      "type": "text/plain"
+    }
+  }
+}

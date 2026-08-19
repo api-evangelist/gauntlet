@@ -1,0 +1,1101 @@
+{
+  "item": [
+    {
+      "id": "303149db-3598-4fc4-9341-0ca072fb37ce",
+      "name": "Vaults",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5fc7bc1d-1f2a-4317-afe3-b45fc48cb220",
+          "name": "List Gauntlet-curated vaults",
+          "request": {
+            "name": "List Gauntlet-curated vaults",
+            "description": {
+              "content": "Returns identification-only rows for the admin-curated visible vaults, ordered most-recent-first; pass `?include_hidden=true` for every enabled vault (hidden included, disabled never). Use `/{vault_id}` for current metrics, `/{vault_id}/definition` for the full vault definition, `/{vault_id}/timeseries` for history.\n\nCursor-paginated, but the default page size is the cap so most callers don't need to think about it — pass `meta.next_cursor` back as `?next=` only if the result exceeds 1000 vaults.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "vaults"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Opaque cursor from previous `meta.next_cursor`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<long>",
+                  "description": "Page size (1–1000, default 1000)."
+                },
+                {
+                  "disabled": false,
+                  "key": "include_hidden",
+                  "value": "<boolean>",
+                  "description": "Include hidden (enabled but unlisted) vaults alongside visible ones. Disabled vaults are never listed."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "359e8909-dc9c-44ee-83ab-a6091028042c",
+              "name": "List of vaults",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "include_hidden",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c2b47ac1-5c96-4f8d-b904-75e561a01e05",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "include_hidden",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b4b758f-478a-4931-92b6-20c5d7cbe782",
+              "name": "Invalid cursor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "include_hidden",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "07681b56-7fa1-4157-a88b-b5047af53103",
+          "name": "List featured vaults",
+          "request": {
+            "name": "List featured vaults",
+            "description": {
+              "content": "Returns the admin-curated featured shortlist, one card per logical vault in curated order: display name, marketing description, deployed chains (highest-TVL first), supply token, aggregate TVL, and the highest 7/30/90-day APY across deployments. `vault_ids` carries per-deployment `{chainId}:{address}` ids for `/v1/vaults/{vault_id}` links, in the same order as `chains`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "vaults",
+                "featured"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c71cde97-8621-47d1-95d2-eeca375ba4c4",
+              "name": "Featured vault cards",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    "featured"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1959-05-20T15:51:13.329Z\",\n    \"count\": 8248\n  },\n  \"data\": [\n    {\n      \"slug\": \"string\",\n      \"name\": \"string\",\n      \"chains\": [\n        \"string\",\n        \"string\"\n      ],\n      \"tvl\": {\n        \"usd\": \"string\"\n      },\n      \"vault_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"apy_30d_max\": 4227.833588127803,\n      \"apy_7d_max\": 3024.2733033048617,\n      \"apy_90d_max\": 7359.76074915272,\n      \"description\": \"string\",\n      \"short_description\": \"string\",\n      \"supply_token\": \"string\",\n      \"updated_at\": \"1949-05-15T21:55:39.111Z\"\n    },\n    {\n      \"slug\": \"string\",\n      \"name\": \"string\",\n      \"chains\": [\n        \"string\",\n        \"string\"\n      ],\n      \"tvl\": {\n        \"usd\": \"string\"\n      },\n      \"vault_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"apy_30d_max\": 4391.772792982063,\n      \"apy_7d_max\": 432.77473639853235,\n      \"apy_90d_max\": 9289.67477675244,\n      \"description\": \"string\",\n      \"short_description\": \"string\",\n      \"supply_token\": \"string\",\n      \"updated_at\": \"2004-09-16T17:14:51.883Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e26392e6-1803-4c10-bef0-7a1c7743dd4d",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    "featured"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f54f24c8-e65e-4d52-ad66-fe6ce282b6a6",
+              "name": "Data source unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    "featured"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9cf5dcd5-34cc-4642-b539-c9e60aa4ed14",
+          "name": "Get current vault metrics",
+          "request": {
+            "name": "Get current vault metrics",
+            "description": {
+              "content": "Returns the current metrics snapshot for a vault — same metric shape that `/timeseries` emits per point, so this is `current point` and timeseries is `historical points`. The vault's protocol-specific definition (fees, hooks, curator, etc.) lives on `/{vault_id}/definition`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "vaults",
+                ":vault_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vault_id",
+                  "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d7c552b8-e031-4496-849e-3fb4273d6ba2",
+              "name": "Current vault metrics",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1994-03-30T11:46:33.270Z\"\n  },\n  \"data\": {\n    \"vault_id\": \"string\",\n    \"chain_id\": 2748,\n    \"address\": \"string\",\n    \"vault_type\": \"string\",\n    \"name\": \"string\",\n    \"symbol\": \"string\",\n    \"numeraire_token\": {\n      \"address\": \"string\",\n      \"decimals\": 4225,\n      \"symbol\": \"string\"\n    },\n    \"metrics\": {\n      \"tvl\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"unit_price\": \"string\",\n      \"total_supply\": \"string\",\n      \"apy_30d\": 327.1331934253585,\n      \"apy_7d\": 3658.596603840092,\n      \"apy_90d\": 4809.949253618235,\n      \"as_of\": 5659\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "37ea9def-b6fa-4e1b-b1a2-cfdbb4f7cffc",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "366f52ab-c760-4b9e-961b-9292b92c3fcb",
+              "name": "Vault not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6937bbc8-44fb-4569-bfe2-627651570d34",
+          "name": "Get vault definition",
+          "request": {
+            "name": "Get vault definition",
+            "description": {
+              "content": "Returns the vault's identity + protocol-specific definition: name, owner, numeraire token, hooks, fees, curator, etc., merged inline based on `vault_type`. Aera carries hooks/feeCalculator, Morpho V1/V2 carry curator + WAD-scaled fees, Symbiotic carries identity only.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "vaults",
+                ":vault_id",
+                "definition"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vault_id",
+                  "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "503d20aa-ad54-470f-bc0a-1fc9d5270423",
+              "name": "Vault definition",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "definition"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "246b55cf-f01b-44e0-8939-0106c50df191",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "definition"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8dcdaae-1d10-4ad2-a82d-d2f692dd20cd",
+              "name": "Vault not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "definition"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier (CAIP-10 `chainId:address`)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "50468f74-068e-42fe-861d-9c7f7b3d7821",
+          "name": "Get vault timeseries data",
+          "request": {
+            "name": "Get vault timeseries data",
+            "description": {
+              "content": "Returns historical metric data points. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Supports date range filtering and cursor pagination — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created with). Defaults to `granularity=day` (one UTC-midnight snapshot per day); `week` returns Monday 00:00 UTC snapshots, `month` returns first-of-month 00:00 UTC snapshots, and `hour` returns the raw hourly cadence. Default page size is 1000.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "vaults",
+                ":vault_id",
+                "timeseries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<string>",
+                  "description": "Window start: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<string>",
+                  "description": "Window end: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Opaque cursor from previous `meta.next_cursor`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<long>",
+                  "description": "Page size (1–10000, default 1000)."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Sort direction: `asc` (default) or `desc`."
+                },
+                {
+                  "disabled": false,
+                  "key": "granularity",
+                  "value": "<string>",
+                  "description": "Sampling granularity: `day` (default), `hour`, `week`, or `month`. Day/week/month buckets start at 00:00 UTC; weeks start Monday and months start on the 1st."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vault_id",
+                  "description": "(Required) Vault identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "59fd74c9-8a43-4dd4-ad77-8e3eccc62038",
+              "name": "Timeseries data points",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"2003-04-30T06:19:26.697Z\",\n    \"count\": 1035,\n    \"limit\": 4667,\n    \"end\": \"1978-02-14T11:33:20.251Z\",\n    \"next_cursor\": \"string\",\n    \"partial_errors\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      }\n    ],\n    \"start\": \"1977-02-08T03:02:54.415Z\"\n  },\n  \"data\": [\n    {\n      \"timestamp\": \"1957-04-03T13:16:35.042Z\",\n      \"tvl\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"unit_price\": \"string\",\n      \"total_supply\": \"string\",\n      \"apy_30d\": 826.2788774630203,\n      \"apy_7d\": 3783.1021754034455,\n      \"apy_90d\": 978.5055371670004\n    },\n    {\n      \"timestamp\": \"1956-09-11T20:01:34.661Z\",\n      \"tvl\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"unit_price\": \"string\",\n      \"total_supply\": \"string\",\n      \"apy_30d\": 8967.76666085311,\n      \"apy_7d\": 2151.106292964131,\n      \"apy_90d\": 9428.634628942556\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e5c6c74-0f6d-46d6-9b07-c9a2a3083c74",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "820321f0-0a4f-428d-8845-09db370d3d88",
+              "name": "Vault not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "00769f65-da8a-41bc-8988-af453570dffa",
+              "name": "Invalid parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "vaults",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "fd41fd0a-ed4b-4f9c-bae5-73368e26abc8",
+    "name": "Gauntlet Prices Vaults API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Gauntlet vault data, user positions, and event analytics API.\n\nContact Support:\n Name: Gauntlet",
+      "type": "text/plain"
+    }
+  }
+}

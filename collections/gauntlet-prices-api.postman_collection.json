@@ -1,0 +1,330 @@
+{
+  "item": [
+    {
+      "id": "9071742e-f0c0-40be-a5d3-efb52fec69dc",
+      "name": "Prices",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "40ad35c9-dc07-485b-953a-454e035d9073",
+          "name": "Get latest token price",
+          "request": {
+            "name": "Get latest token price",
+            "description": {
+              "content": "Returns the latest USD price for a token. Query parameters: `address` (required), `chain_id` (required), `at` (optional ISO 8601 timestamp).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "prices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ebef8d11-f786-4243-b381-09c785448e89",
+              "name": "Token price",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"address\": \"string\",\n  \"chain_id\": 2756,\n  \"symbol\": \"string\",\n  \"price\": {\n    \"usd\": 5072.0852807114425,\n    \"decimals\": 8117\n  },\n  \"currency\": \"string\",\n  \"timestamp\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a5025c64-5f6b-4d9a-a5ef-c4645b94193f",
+              "name": "Token not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ee651665-1f3a-4372-9418-732bd63cb941",
+              "name": "Invalid parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9941d1f3-37bd-4ea0-8b99-cf4556348852",
+              "name": "Pricing service not configured",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "32df1ae1-cc9b-4117-8b03-15404246a984",
+          "name": "Get historical token prices",
+          "request": {
+            "name": "Get historical token prices",
+            "description": {
+              "content": "Returns a USD price timeseries for a token. Query parameters: `address` (required), `chain_id` (required), `start` (required ISO 8601), `end` (required ISO 8601), `granularity` (optional: `raw` | `hour` | `day` | `week` | `month`), `limit` (optional, default 1000, max 5000).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "prices",
+                "timeseries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3f63b83b-dd85-495c-97cf-371eb3f4b24e",
+              "name": "Price timeseries",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"timestamp\": \"string\",\n      \"price\": {\n        \"usd\": 6136.998302671977\n      }\n    },\n    {\n      \"timestamp\": \"string\",\n      \"price\": {\n        \"usd\": 5922.956454231392\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "212ff78c-530e-4b19-bf62-5dde21750430",
+              "name": "Invalid parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "625f0d61-8a90-4e15-8062-09aecccb9524",
+              "name": "Pricing service not configured",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "prices",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "bf8f2582-e741-48e4-9b70-5952b980c9ce",
+    "name": "Gauntlet Prices API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Gauntlet vault data, user positions, and event analytics API.\n\nContact Support:\n Name: Gauntlet",
+      "type": "text/plain"
+    }
+  }
+}

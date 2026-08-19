@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Gauntlet Prices TVL API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "TVL",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get live aggregate TVL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/tvl",
+            "params": [
+              {
+                "name": "include_breakdown",
+                "value": "",
+                "type": "query",
+                "description": "Include chain and external-source TVL breakdown rows."
+              },
+              {
+                "name": "include_sources",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated alias for include_breakdown."
+              }
+            ]
+          },
+          "docs": "Returns live aggregate Gauntlet TVL composed from indexed Gaia vault data and configured external TVL sources. Source totals are always returned; pass `?include_breakdown=true` for chain and external-source explainability rows."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

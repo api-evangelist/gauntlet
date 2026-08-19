@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Gauntlet Prices API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Prices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get latest token price",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/prices"
+          },
+          "docs": "Returns the latest USD price for a token. Query parameters: `address` (required), `chain_id` (required), `at` (optional ISO 8601 timestamp)."
+        },
+        {
+          "info": {
+            "name": "Get historical token prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/prices/timeseries"
+          },
+          "docs": "Returns a USD price timeseries for a token. Query parameters: `address` (required), `chain_id` (required), `start` (required ISO 8601), `end` (required ISO 8601), `granularity` (optional: `raw` | `hour` | `day` | `week` | `month`), `limit` (optional, default 1000, max 5000)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

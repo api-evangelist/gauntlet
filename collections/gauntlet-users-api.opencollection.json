@@ -1,0 +1,178 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Gauntlet Prices Users API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get user wallet activity (deposits, withdrawals, transfers)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users/:wallet_address/activity",
+            "params": [
+              {
+                "name": "wallet_address",
+                "value": "",
+                "type": "path",
+                "description": "Ethereum wallet address"
+              },
+              {
+                "name": "vault_id",
+                "value": "",
+                "type": "query",
+                "description": "CAIP-10 vault identifier. Optional — omit for wallet-wide activity across every vault the wallet has touched."
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from previous `meta.next_cursor`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (1–1000, default 100)."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction: `desc` (default) or `asc`."
+              }
+            ]
+          },
+          "docs": "Immutable log of on-chain events that affected the wallet's vault position. Each row is a frozen-in-time record; rows never mutate after emission. \n\n`?vault_id=` narrows to one vault; omitted = activity across every vault the wallet has touched. Each row echoes its `vault_id` so wallet-wide consumers can distinguish per-vault activity. \n\nAsync deposit/redeem lifecycles emit multiple rows (one at request time with `status=pending`, a later one with `status=settled` or `refunded`). Consumers corre"
+        },
+        {
+          "info": {
+            "name": "Get all current positions for a wallet",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users/:wallet_address/positions",
+            "params": [
+              {
+                "name": "wallet_address",
+                "value": "",
+                "type": "path",
+                "description": "Ethereum wallet address"
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from previous `meta.next_cursor`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (1–500, default 100)."
+              }
+            ]
+          },
+          "docs": "Returns every vault position the wallet currently holds or has pending exposure in (pending deposit or redeem). Fully-exited positions (zero shares, no pending escrow) are excluded.\n\nAll monetary metrics include a `usd` field (null when pricing is unavailable). `value.usd` and `pending_deposit_assets.usd` use the current spot price. `cost_basis.usd` and `pnl.realized.usd` are computed by replaying on-chain events against the token's historical price series — the same method used by `GET /v1/user"
+        },
+        {
+          "info": {
+            "name": "Get user position in a specific vault",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users/:wallet_address/positions/:vault_id",
+            "params": [
+              {
+                "name": "wallet_address",
+                "value": "",
+                "type": "path",
+                "description": "Ethereum wallet address"
+              },
+              {
+                "name": "vault_id",
+                "value": "",
+                "type": "path",
+                "description": "Vault identifier"
+              }
+            ]
+          },
+          "docs": "Returns the current position snapshot for a wallet in a single vault. Historical points live on `/positions/{vault_id}/timeseries`."
+        },
+        {
+          "info": {
+            "name": "Get user position timeseries for a specific vault",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users/:wallet_address/positions/:vault_id/timeseries",
+            "params": [
+              {
+                "name": "wallet_address",
+                "value": "",
+                "type": "path",
+                "description": "Ethereum wallet address"
+              },
+              {
+                "name": "vault_id",
+                "value": "",
+                "type": "path",
+                "description": "Vault identifier"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Window start: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "Window end: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from previous `meta.next_cursor`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (1–10000, default 1000)."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction: `asc` (default) or `desc`."
+              },
+              {
+                "name": "granularity",
+                "value": "",
+                "type": "query",
+                "description": "Sampling granularity: `day` (default), `hour`, `week`, or `month`. Day/week/month buckets start at 00:00 UTC; weeks start Monday and months start on the 1st."
+              }
+            ]
+          },
+          "docs": "Returns historical value, cost basis, grouped PnL, and ROI data for a single vault position. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Cursor-paginated — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created with). Defaults to `granularity=day` (one UTC-midnight snapshot per day); `week` returns Monday 00:00 UTC snapshots, `month` returns first-of-month 00:00 UTC snapshots, and `hour` r"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

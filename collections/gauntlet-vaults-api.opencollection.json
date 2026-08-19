@@ -1,0 +1,153 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Gauntlet Prices Vaults API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Vaults",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Gauntlet-curated vaults",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/vaults",
+            "params": [
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from previous `meta.next_cursor`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (1–1000, default 1000)."
+              },
+              {
+                "name": "include_hidden",
+                "value": "",
+                "type": "query",
+                "description": "Include hidden (enabled but unlisted) vaults alongside visible ones. Disabled vaults are never listed."
+              }
+            ]
+          },
+          "docs": "Returns identification-only rows for the admin-curated visible vaults, ordered most-recent-first; pass `?include_hidden=true` for every enabled vault (hidden included, disabled never). Use `/{vault_id}` for current metrics, `/{vault_id}/definition` for the full vault definition, `/{vault_id}/timeseries` for history.\n\nCursor-paginated, but the default page size is the cap so most callers don't need to think about it — pass `meta.next_cursor` back as `?next=` only if the result exceeds 1000 vaults"
+        },
+        {
+          "info": {
+            "name": "List featured vaults",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/vaults/featured"
+          },
+          "docs": "Returns the admin-curated featured shortlist, one card per logical vault in curated order: display name, marketing description, deployed chains (highest-TVL first), supply token, aggregate TVL, and the highest 7/30/90-day APY across deployments. `vault_ids` carries per-deployment `{chainId}:{address}` ids for `/v1/vaults/{vault_id}` links, in the same order as `chains`."
+        },
+        {
+          "info": {
+            "name": "Get current vault metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/vaults/:vault_id",
+            "params": [
+              {
+                "name": "vault_id",
+                "value": "",
+                "type": "path",
+                "description": "Vault identifier (CAIP-10 `chainId:address`)"
+              }
+            ]
+          },
+          "docs": "Returns the current metrics snapshot for a vault — same metric shape that `/timeseries` emits per point, so this is `current point` and timeseries is `historical points`. The vault's protocol-specific definition (fees, hooks, curator, etc.) lives on `/{vault_id}/definition`."
+        },
+        {
+          "info": {
+            "name": "Get vault definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/vaults/:vault_id/definition",
+            "params": [
+              {
+                "name": "vault_id",
+                "value": "",
+                "type": "path",
+                "description": "Vault identifier (CAIP-10 `chainId:address`)"
+              }
+            ]
+          },
+          "docs": "Returns the vault's identity + protocol-specific definition: name, owner, numeraire token, hooks, fees, curator, etc., merged inline based on `vault_type`. Aera carries hooks/feeCalculator, Morpho V1/V2 carry curator + WAD-scaled fees, Symbiotic carries identity only."
+        },
+        {
+          "info": {
+            "name": "Get vault timeseries data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/vaults/:vault_id/timeseries",
+            "params": [
+              {
+                "name": "vault_id",
+                "value": "",
+                "type": "path",
+                "description": "Vault identifier"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Window start: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "Window end: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from previous `meta.next_cursor`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (1–10000, default 1000)."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction: `asc` (default) or `desc`."
+              },
+              {
+                "name": "granularity",
+                "value": "",
+                "type": "query",
+                "description": "Sampling granularity: `day` (default), `hour`, `week`, or `month`. Day/week/month buckets start at 00:00 UTC; weeks start Monday and months start on the 1st."
+              }
+            ]
+          },
+          "docs": "Returns historical metric data points. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Supports date range filtering and cursor pagination — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created with). Defaults to `granularity=day` (one UTC-midnight snapshot per day); `week` returns Monday 00:00 UTC snapshots, `month` returns first-of-month 00:00 UTC snapshots, and `hour` returns the raw hour"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

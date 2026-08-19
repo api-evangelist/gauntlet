@@ -1,0 +1,1064 @@
+{
+  "item": [
+    {
+      "id": "21b21e54-8415-400f-8dc5-0f1c9e5920cb",
+      "name": "Users",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f50a7a33-5d13-409c-94dd-c07f2a40915f",
+          "name": "Get user wallet activity (deposits, withdrawals, transfers)",
+          "request": {
+            "name": "Get user wallet activity (deposits, withdrawals, transfers)",
+            "description": {
+              "content": "Immutable log of on-chain events that affected the wallet's vault position. Each row is a frozen-in-time record; rows never mutate after emission. \n\n`?vault_id=` narrows to one vault; omitted = activity across every vault the wallet has touched. Each row echoes its `vault_id` so wallet-wide consumers can distinguish per-vault activity. \n\nAsync deposit/redeem lifecycles emit multiple rows (one at request time with `status=pending`, a later one with `status=settled` or `refunded`). Consumers correlate them via `request_hash` to follow a single action across rows. Sync flows emit one row directly in the settled state. \n\nPagination is cursor-only. Default order is `desc` (newest first). Default page size 100, max 1000.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "users",
+                ":wallet_address",
+                "activity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "vault_id",
+                  "value": "<string>",
+                  "description": "CAIP-10 vault identifier. Optional — omit for wallet-wide activity across every vault the wallet has touched."
+                },
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Opaque cursor from previous `meta.next_cursor`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<long>",
+                  "description": "Page size (1–1000, default 100)."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Sort direction: `desc` (default) or `asc`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "wallet_address",
+                  "description": "(Required) Ethereum wallet address"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ee3e2d35-0f98-4aec-bd78-4cc63a9a4880",
+              "name": "User wallet activity",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "activity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "vault_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1990-06-03T21:09:50.002Z\",\n    \"count\": 2396,\n    \"limit\": 2300,\n    \"end\": \"2023-06-21T11:10:43.139Z\",\n    \"next_cursor\": \"string\",\n    \"partial_errors\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      }\n    ],\n    \"start\": \"1996-08-29T18:50:10.663Z\"\n  },\n  \"data\": [\n    {\n      \"block_timestamp\": 2552,\n      \"type\": \"string\",\n      \"vault_id\": \"string\",\n      \"tx_hash\": \"string\",\n      \"block_number\": 4244,\n      \"block_hash\": \"string\",\n      \"shares_delta\": \"string\",\n      \"assets_delta\": {\n        \"native\": \"string\",\n        \"token\": null\n      },\n      \"request_hash\": \"string\"\n    },\n    {\n      \"block_timestamp\": 8763,\n      \"type\": \"string\",\n      \"vault_id\": \"string\",\n      \"tx_hash\": \"string\",\n      \"block_number\": 6245,\n      \"block_hash\": \"string\",\n      \"shares_delta\": \"string\",\n      \"assets_delta\": {\n        \"native\": \"string\",\n        \"token\": null\n      },\n      \"request_hash\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2e50518e-7edd-492e-b194-ef0bd954f7ea",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "activity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "vault_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d99501e1-a041-4ebe-bc6d-1681d266e52f",
+              "name": "Invalid cursor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "activity"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "vault_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a85e4539-b8d1-4c46-95fb-abc6b7cbe697",
+          "name": "Get all current positions for a wallet",
+          "request": {
+            "name": "Get all current positions for a wallet",
+            "description": {
+              "content": "Returns every vault position the wallet currently holds or has pending exposure in (pending deposit or redeem). Fully-exited positions (zero shares, no pending escrow) are excluded.\n\nAll monetary metrics include a `usd` field (null when pricing is unavailable). `value.usd` and `pending_deposit_assets.usd` use the current spot price. `cost_basis.usd` and `pnl.realized.usd` are computed by replaying on-chain events against the token's historical price series — the same method used by `GET /v1/users/{wallet}/positions/{vault_id}`. `pnl.unrealized.usd`, `pnl.total.usd`, and `roi_pct.usd` are derived from those.\n\nCursor-paginated on internal position ID. Default page size 100, max 500.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "users",
+                ":wallet_address",
+                "positions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Opaque cursor from previous `meta.next_cursor`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<long>",
+                  "description": "Page size (1–500, default 100)."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "wallet_address",
+                  "description": "(Required) Ethereum wallet address"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e8ba77b2-3ce1-4a87-b422-11798b965721",
+              "name": "All wallet positions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1969-07-19T06:23:14.580Z\",\n    \"count\": 1451,\n    \"limit\": 9354,\n    \"end\": \"2004-07-22T04:34:41.826Z\",\n    \"next_cursor\": \"string\",\n    \"partial_errors\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      }\n    ],\n    \"start\": \"1989-03-05T16:59:56.424Z\"\n  },\n  \"data\": [\n    {\n      \"vault_id\": \"string\",\n      \"wallet_address\": \"string\",\n      \"metrics\": {\n        \"pending_deposit_assets\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"shares_owned\": \"string\",\n        \"pending_redeem_shares\": \"string\",\n        \"value\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"cost_basis\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"pnl\": {\n          \"total\": {\n            \"native\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"usd\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"unrealized\": {\n            \"native\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"usd\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"realized\": {\n            \"native\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"usd\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"roi_pct\": {\n          \"native\": 4321.034597067039,\n          \"usd\": 3269.179393685391\n        }\n      },\n      \"numeraire_token\": null\n    },\n    {\n      \"vault_id\": \"string\",\n      \"wallet_address\": \"string\",\n      \"metrics\": {\n        \"pending_deposit_assets\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"shares_owned\": \"string\",\n        \"pending_redeem_shares\": \"string\",\n        \"value\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"cost_basis\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"pnl\": {\n          \"total\": {\n            \"native\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"usd\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"unrealized\": {\n            \"native\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"usd\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"realized\": {\n            \"native\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"usd\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"roi_pct\": {\n          \"native\": 1949.9873266412383,\n          \"usd\": 100.59031537986041\n        }\n      },\n      \"numeraire_token\": null\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "93281a61-f177-43e0-8c53-08862dbc1c93",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "168346ef-438e-40be-9b57-8dd400d3c25f",
+              "name": "Invalid cursor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e4e8af6d-b93c-4f3d-a947-9fe4d79921fd",
+          "name": "Get user position in a specific vault",
+          "request": {
+            "name": "Get user position in a specific vault",
+            "description": {
+              "content": "Returns the current position snapshot for a wallet in a single vault. Historical points live on `/positions/{vault_id}/timeseries`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "users",
+                ":wallet_address",
+                "positions",
+                ":vault_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "wallet_address",
+                  "description": "(Required) Ethereum wallet address"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vault_id",
+                  "description": "(Required) Vault identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "78c09219-ec45-45ea-bfe1-ccc51eb3fc80",
+              "name": "Single vault position",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions",
+                    ":vault_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1971-01-22T00:56:59.582Z\"\n  },\n  \"data\": {\n    \"vault_id\": \"string\",\n    \"wallet_address\": \"string\",\n    \"metrics\": {\n      \"pending_deposit_assets\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"shares_owned\": \"string\",\n      \"pending_redeem_shares\": \"string\",\n      \"value\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"cost_basis\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"pnl\": {\n        \"total\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"unrealized\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"realized\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        }\n      },\n      \"roi_pct\": {\n        \"native\": 7762.789438479311,\n        \"usd\": 175.8914055536387\n      }\n    },\n    \"numeraire_token\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7c95688-77ad-4420-9f07-618d117c8803",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions",
+                    ":vault_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "22fc76eb-8ef4-4e28-8753-35552462848c",
+              "name": "Position not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions",
+                    ":vault_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "164b2358-d7b6-4e1e-807d-2adccf60298e",
+          "name": "Get user position timeseries for a specific vault",
+          "request": {
+            "name": "Get user position timeseries for a specific vault",
+            "description": {
+              "content": "Returns historical value, cost basis, grouped PnL, and ROI data for a single vault position. Default order is `asc` (oldest first, chart-friendly); pass `?order=desc` for newest-first list views. Cursor-paginated — pass `meta.next_cursor` back as `?next=` for the next page (cursor is bound to the order it was created with). Defaults to `granularity=day` (one UTC-midnight snapshot per day); `week` returns Monday 00:00 UTC snapshots, `month` returns first-of-month 00:00 UTC snapshots, and `hour` returns the raw hourly cadence. Default page size is 1000.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "users",
+                ":wallet_address",
+                "positions",
+                ":vault_id",
+                "timeseries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start",
+                  "value": "<string>",
+                  "description": "Window start: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "end",
+                  "value": "<string>",
+                  "description": "Window end: ISO 8601 date (`2026-01-01`, read as 00:00:00 UTC) or RFC 3339 timestamp (`2026-01-01T00:00:00Z`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Opaque cursor from previous `meta.next_cursor`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<long>",
+                  "description": "Page size (1–10000, default 1000)."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Sort direction: `asc` (default) or `desc`."
+                },
+                {
+                  "disabled": false,
+                  "key": "granularity",
+                  "value": "<string>",
+                  "description": "Sampling granularity: `day` (default), `hour`, `week`, or `month`. Day/week/month buckets start at 00:00 UTC; weeks start Monday and months start on the 1st."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "wallet_address",
+                  "description": "(Required) Ethereum wallet address"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vault_id",
+                  "description": "(Required) Vault identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b951cd26-d768-4954-9504-33b27010433f",
+              "name": "Position timeseries",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"request_id\": \"string\",\n    \"refreshed_at\": \"1980-02-25T16:09:16.712Z\",\n    \"count\": 413,\n    \"limit\": 2744,\n    \"end\": \"1998-10-08T02:38:56.511Z\",\n    \"next_cursor\": \"string\",\n    \"partial_errors\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"resource_id\": \"string\"\n      }\n    ],\n    \"start\": \"1986-08-18T01:17:26.027Z\"\n  },\n  \"data\": [\n    {\n      \"timestamp\": \"1985-11-20T23:40:08.947Z\",\n      \"shares_owned\": \"string\",\n      \"value\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"cost_basis\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"pnl\": {\n        \"total\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"unrealized\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"realized\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        }\n      },\n      \"roi_pct\": {\n        \"native\": 4110.290023293423,\n        \"usd\": 5956.709906748951\n      }\n    },\n    {\n      \"timestamp\": \"2019-10-11T08:39:39.204Z\",\n      \"shares_owned\": \"string\",\n      \"value\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"cost_basis\": {\n        \"native\": \"string\",\n        \"usd\": \"string\"\n      },\n      \"pnl\": {\n        \"total\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"unrealized\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        },\n        \"realized\": {\n          \"native\": \"string\",\n          \"usd\": \"string\"\n        }\n      },\n      \"roi_pct\": {\n        \"native\": 2472.35633296196,\n        \"usd\": 7791.613536937057\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7fb02a06-f8e1-422c-8e71-cdb684ce9c90",
+              "name": "Missing or invalid auth",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7acafc3-c898-4b91-9f6a-d5570cce54e8",
+              "name": "Invalid cursor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":wallet_address",
+                    "positions",
+                    ":vault_id",
+                    "timeseries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "granularity",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "wallet_address",
+                      "description": "(Required) Ethereum wallet address"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vault_id",
+                      "description": "(Required) Vault identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d43533ba-46b1-4b66-95b8-97eb062d2447",
+    "name": "Gauntlet Prices Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Gauntlet vault data, user positions, and event analytics API.\n\nContact Support:\n Name: Gauntlet",
+      "type": "text/plain"
+    }
+  }
+}
