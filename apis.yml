@@ -41,6 +41,16 @@ tags:
 - DeFi
 - Risk Management
 - Yield
+- Vault
+- Blockchain
+- Web3
+- Financial Modeling
+tags_raw:
+- Company
+- Crypto Data
+- DeFi
+- Risk Management
+- Yield
 - Vaults
 - Blockchain
 - Web3
@@ -118,6 +128,8 @@ apis:
   humanURL: https://docs.gauntlet.xyz/
   baseURL: https://api.gauntlet.xyz
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
@@ -140,6 +152,8 @@ apis:
   humanURL: https://docs.gauntlet.xyz/
   baseURL: https://api.gauntlet.xyz
   tags:
+  - Vault
+  tags_raw:
   - Vaults
   properties:
   - type: OpenAPI
