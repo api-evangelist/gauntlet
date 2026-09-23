@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Gauntlet Prices TVL API
+  title: Gauntlet TVL API
   description: Gauntlet vault data, user positions, and event analytics API.
   contact:
     name: Gauntlet
@@ -52,6 +52,31 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+    TvlResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/TvlSummary'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    TvlAmount:
+      type: object
+      required:
+      - usd
+      properties:
+        usd:
+          type: string
     TvlTotal:
       type: object
       required:
@@ -64,46 +89,6 @@ components:
           type: string
         label:
           type: string
-        tvl:
-          $ref: '#/components/schemas/TvlAmount'
-        updated_at:
-          type: string
-          format: date-time
-    BasicMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      properties:
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-    TvlAmount:
-      type: object
-      required:
-      - usd
-      properties:
-        usd:
-          type: string
-    TvlSummary:
-      type: object
-      required:
-      - tvl
-      - updated_at
-      - totals
-      properties:
-        breakdown:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TvlBreakdown'
-        totals:
-          type: array
-          items:
-            $ref: '#/components/schemas/TvlTotal'
         tvl:
           $ref: '#/components/schemas/TvlAmount'
         updated_at:
@@ -129,14 +114,39 @@ components:
         updated_at:
           type: string
           format: date-time
-    ErrorResponse:
+    BasicMeta:
       type: object
-      description: Standard error response envelope returned on 4xx/5xx
       required:
-      - error
+      - request_id
+      - refreshed_at
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorBody'
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    TvlSummary:
+      type: object
+      required:
+      - tvl
+      - updated_at
+      - totals
+      properties:
+        breakdown:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TvlBreakdown'
+        totals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TvlTotal'
+        tvl:
+          $ref: '#/components/schemas/TvlAmount'
+        updated_at:
+          type: string
+          format: date-time
     ErrorBody:
       type: object
       required:
@@ -150,13 +160,3 @@ components:
         message:
           type: string
           description: Human-readable error message
-    TvlResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/TvlSummary'
-        meta:
-          $ref: '#/components/schemas/BasicMeta'

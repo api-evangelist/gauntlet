@@ -1,11 +1,7 @@
 {
   "provider": "gauntlet",
   "sources": [
-    "gauntlet-prices-api-openapi.yml",
-    "gauntlet-system-api-openapi.yml",
-    "gauntlet-tvl-api-openapi.yml",
-    "gauntlet-users-api-openapi.yml",
-    "gauntlet-vaults-api-openapi.yml"
+    "_original/gauntlet-openapi-original.json"
   ],
   "outputs": [
     "gauntlet-prices-api-openapi.yml",
@@ -17,6 +13,21 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "gauntlet-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "gauntlet-openapi-original.json: declared missing tag: Prices",
+    "gauntlet-openapi-original.json: declared missing tag: System",
+    "gauntlet-openapi-original.json: declared missing tag: TVL",
+    "gauntlet-openapi-original.json: declared missing tag: Users",
+    "gauntlet-openapi-original.json: declared missing tag: Vaults",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "gauntlet-prices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gauntlet-system-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gauntlet-tvl-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gauntlet-users-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gauntlet-vaults-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

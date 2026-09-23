@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Gauntlet Prices API
   description: Gauntlet vault data, user positions, and event analytics API.
@@ -51,6 +51,25 @@ paths:
           description: Pricing service not configured
 components:
   schemas:
+    TimeseriesResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeseriesPoint'
+    TimeseriesPoint:
+      type: object
+      required:
+      - timestamp
+      - price
+      properties:
+        price:
+          $ref: '#/components/schemas/HistoricalPriceValue'
+        timestamp:
+          type: string
     PriceValue:
       type: object
       required:
@@ -72,16 +91,6 @@ components:
         usd:
           type: number
           format: double
-    TimeseriesPoint:
-      type: object
-      required:
-      - timestamp
-      - price
-      properties:
-        price:
-          $ref: '#/components/schemas/HistoricalPriceValue'
-        timestamp:
-          type: string
     LatestPriceResponse:
       type: object
       required:
@@ -106,12 +115,3 @@ components:
           type: string
         timestamp:
           type: string
-    TimeseriesResponse:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeseriesPoint'

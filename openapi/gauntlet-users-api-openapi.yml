@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Gauntlet Prices Users API
+  title: Gauntlet Users API
   description: Gauntlet vault data, user positions, and event analytics API.
   contact:
     name: Gauntlet
@@ -16,7 +16,16 @@ paths:
       tags:
       - Users
       summary: Get user wallet activity (deposits, withdrawals, transfers)
-      description: "Immutable log of on-chain events that affected the wallet's vault position. Each row is a frozen-in-time record; rows never mutate after emission. \n\n`?vault_id=` narrows to one vault; omitted = activity across every vault the wallet has touched. Each row echoes its `vault_id` so wallet-wide consumers can distinguish per-vault activity. \n\nAsync deposit/redeem lifecycles emit multiple rows (one at request time with `status=pending`, a later one with `status=settled` or `refunded`). Consumers correlate them via `request_hash` to follow a single action across rows. Sync flows emit one row directly in the settled state. \n\nPagination is cursor-only. Default order is `desc` (newest first). Default page size 100, max 1000."
+      description: 'Immutable log of on-chain events that affected the wallet''s vault position. Each row is a frozen-in-time record; rows never mutate after emission.
+
+
+        `?vault_id=` narrows to one vault; omitted = activity across every vault the wallet has touched. Each row echoes its `vault_id` so wallet-wide consumers can distinguish per-vault activity.
+
+
+        Async deposit/redeem lifecycles emit multiple rows (one at request time with `status=pending`, a later one with `status=settled` or `refunded`). Consumers correlate them via `request_hash` to follow a single action across rows. Sync flows emit one row directly in the settled state.
+
+
+        Pagination is cursor-only. Default order is `desc` (newest first). Default page size 100, max 1000.'
       operationId: get_user_activity
       parameters:
       - name: wallet_address
@@ -238,18 +247,47 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
-    UserPositionsTimeseriesResponse:
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+    TokenRef:
       type: object
       required:
-      - meta
-      - data
+      - address
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PositionTimeseriesPoint'
-        meta:
-          $ref: '#/components/schemas/TimeseriesMeta'
+        address:
+          type: string
+        decimals:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        symbol:
+          type:
+          - string
+          - 'null'
+    PartialResponseError:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for the isolated item failure.
+        message:
+          type: string
+          description: Human-readable error message.
+        resource_id:
+          type:
+          - string
+          - 'null'
+          description: Resource that failed inside the aggregate response, when known.
     UserActivity:
       type: object
       description: 'One immutable entry in the wallet''s activity log.
@@ -346,136 +384,6 @@ components:
         vault_id:
           type: string
           description: CAIP-10 vault identifier this row belongs to. Always emitted.
-    UserActivityResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserActivity'
-        meta:
-          $ref: '#/components/schemas/TimeseriesMeta'
-    BasicMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      properties:
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-    UserPositionMetrics:
-      type: object
-      required:
-      - pending_deposit_assets
-      - shares_owned
-      - pending_redeem_shares
-      - value
-      - cost_basis
-      - pnl
-      - roi_pct
-      properties:
-        cost_basis:
-          $ref: '#/components/schemas/AmountPair'
-          description: Cumulative cost of currently-held shares.
-        pending_deposit_assets:
-          $ref: '#/components/schemas/AmountPair'
-          description: 'Assets escrowed at the Aera Provisioner pending share mint
-
-            (`native` = numeraire-token units, `usd` = `native` × current USD price).'
-        pending_redeem_shares:
-          type: string
-          description: Shares escrowed at the Aera Provisioner pending asset return.
-        pnl:
-          $ref: '#/components/schemas/PnlBreakdown'
-          description: Profit and loss grouped by total, unrealized, and realized values.
-        roi_pct:
-          $ref: '#/components/schemas/RatioPair'
-          description: Time-weighted ROI from user deposit/redeem history.
-        shares_owned:
-          type: string
-          description: Shares currently held by the wallet.
-        value:
-          $ref: '#/components/schemas/AmountPair'
-          description: 'Current market value of held shares (`native` = numeraire-token
-
-            units, `usd` = `native` × current USD price).'
-    PnlBreakdown:
-      type: object
-      required:
-      - total
-      - unrealized
-      - realized
-      properties:
-        realized:
-          $ref: '#/components/schemas/AmountPair'
-          description: Locked-in PnL from past disposals.
-        total:
-          $ref: '#/components/schemas/AmountPair'
-          description: '`unrealized` + `realized`.'
-        unrealized:
-          $ref: '#/components/schemas/AmountPair'
-          description: '`value` − `cost_basis`.'
-    PartialResponseError:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for the isolated item failure.
-        message:
-          type: string
-          description: Human-readable error message.
-        resource_id:
-          type:
-          - string
-          - 'null'
-          description: Resource that failed inside the aggregate response, when known.
-    ErrorResponse:
-      type: object
-      description: Standard error response envelope returned on 4xx/5xx
-      required:
-      - error
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorBody'
-    PositionTimeseriesPoint:
-      type: object
-      required:
-      - timestamp
-      - shares_owned
-      - value
-      - cost_basis
-      - pnl
-      - roi_pct
-      properties:
-        cost_basis:
-          $ref: '#/components/schemas/AmountPair'
-          description: Cumulative cost of held shares (`usd` uses per-event historical pricing).
-        pnl:
-          $ref: '#/components/schemas/PnlBreakdown'
-          description: Profit and loss grouped by total, unrealized, and realized values.
-        roi_pct:
-          $ref: '#/components/schemas/RatioPair'
-          description: ROI ratio (`native` is in-kind; `usd` is null when pricing unavailable).
-        shares_owned:
-          type: string
-          description: Shares currently held by the wallet at this timestamp.
-        timestamp:
-          type: string
-          format: date-time
-        value:
-          $ref: '#/components/schemas/AmountPair'
-          description: 'Position value at this timestamp (`native` = numeraire-token units,
-
-            `usd` = `native` × historical USD price; null when unavailable).'
     UserPosition:
       type: object
       required:
@@ -493,105 +401,6 @@ components:
           type: string
         wallet_address:
           type: string
-    AssetDelta:
-      type: object
-      description: 'Asset-delta envelope on user activity rows. `native` is always present;
-
-        `token` is present when the indexer knows the row''s asset token.
-
-        The struct shape is kept stable so derived denominations (usd,
-
-        numeraire token) can be added later without breaking integrators.'
-      required:
-      - native
-      properties:
-        native:
-          type: string
-        token:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/TokenRef'
-    RatioPair:
-      type: object
-      description: 'JSON-number ratio paired across native (in-kind) and USD denominations.
-
-        Null when event history is unavailable or cannot support ROI replay.'
-      properties:
-        native:
-          type:
-          - number
-          - 'null'
-          format: double
-        usd:
-          type:
-          - number
-          - 'null'
-          format: double
-    AmountPair:
-      type: object
-      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
-
-        `native` is always present; `usd` is JSON null when pricing is unavailable.'
-      required:
-      - native
-      properties:
-        native:
-          type: string
-        usd:
-          type:
-          - string
-          - 'null'
-    UserAllPositionsResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserPosition'
-        meta:
-          $ref: '#/components/schemas/TimeseriesMeta'
-    ErrorBody:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
-        details: {}
-        message:
-          type: string
-          description: Human-readable error message
-    UserPositionLatestResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/UserPosition'
-        meta:
-          $ref: '#/components/schemas/BasicMeta'
-    TokenRef:
-      type: object
-      required:
-      - address
-      properties:
-        address:
-          type: string
-        decimals:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        symbol:
-          type:
-          - string
-          - 'null'
     TimeseriesMeta:
       type: object
       required:
@@ -636,3 +445,203 @@ components:
           - 'null'
           format: date-time
           description: Window bounds the response covers (echoes the request when set).
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    PnlBreakdown:
+      type: object
+      required:
+      - total
+      - unrealized
+      - realized
+      properties:
+        realized:
+          $ref: '#/components/schemas/AmountPair'
+          description: Locked-in PnL from past disposals.
+        total:
+          $ref: '#/components/schemas/AmountPair'
+          description: '`unrealized` + `realized`.'
+        unrealized:
+          $ref: '#/components/schemas/AmountPair'
+          description: '`value` − `cost_basis`.'
+    AmountPair:
+      type: object
+      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
+
+        `native` is always present; `usd` is JSON null when pricing is unavailable.'
+      required:
+      - native
+      properties:
+        native:
+          type: string
+        usd:
+          type:
+          - string
+          - 'null'
+    AssetDelta:
+      type: object
+      description: 'Asset-delta envelope on user activity rows. `native` is always present;
+
+        `token` is present when the indexer knows the row''s asset token.
+
+        The struct shape is kept stable so derived denominations (usd,
+
+        numeraire token) can be added later without breaking integrators.'
+      required:
+      - native
+      properties:
+        native:
+          type: string
+        token:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/TokenRef'
+    UserPositionMetrics:
+      type: object
+      required:
+      - pending_deposit_assets
+      - shares_owned
+      - pending_redeem_shares
+      - value
+      - cost_basis
+      - pnl
+      - roi_pct
+      properties:
+        cost_basis:
+          $ref: '#/components/schemas/AmountPair'
+          description: Cumulative cost of currently-held shares.
+        pending_deposit_assets:
+          $ref: '#/components/schemas/AmountPair'
+          description: 'Assets escrowed at the Aera Provisioner pending share mint
+
+            (`native` = numeraire-token units, `usd` = `native` × current USD price).'
+        pending_redeem_shares:
+          type: string
+          description: Shares escrowed at the Aera Provisioner pending asset return.
+        pnl:
+          $ref: '#/components/schemas/PnlBreakdown'
+          description: Profit and loss grouped by total, unrealized, and realized values.
+        roi_pct:
+          $ref: '#/components/schemas/RatioPair'
+          description: Time-weighted ROI from user deposit/redeem history.
+        shares_owned:
+          type: string
+          description: Shares currently held by the wallet.
+        value:
+          $ref: '#/components/schemas/AmountPair'
+          description: 'Current market value of held shares (`native` = numeraire-token
+
+            units, `usd` = `native` × current USD price).'
+    UserActivityResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserActivity'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
+    RatioPair:
+      type: object
+      description: 'JSON-number ratio paired across native (in-kind) and USD denominations.
+
+        Null when event history is unavailable or cannot support ROI replay.'
+      properties:
+        native:
+          type:
+          - number
+          - 'null'
+          format: double
+        usd:
+          type:
+          - number
+          - 'null'
+          format: double
+    UserPositionsTimeseriesResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionTimeseriesPoint'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
+    UserPositionLatestResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/UserPosition'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    UserAllPositionsResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPosition'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
+    PositionTimeseriesPoint:
+      type: object
+      required:
+      - timestamp
+      - shares_owned
+      - value
+      - cost_basis
+      - pnl
+      - roi_pct
+      properties:
+        cost_basis:
+          $ref: '#/components/schemas/AmountPair'
+          description: Cumulative cost of held shares (`usd` uses per-event historical pricing).
+        pnl:
+          $ref: '#/components/schemas/PnlBreakdown'
+          description: Profit and loss grouped by total, unrealized, and realized values.
+        roi_pct:
+          $ref: '#/components/schemas/RatioPair'
+          description: ROI ratio (`native` is in-kind; `usd` is null when pricing unavailable).
+        shares_owned:
+          type: string
+          description: Shares currently held by the wallet at this timestamp.
+        timestamp:
+          type: string
+          format: date-time
+        value:
+          $ref: '#/components/schemas/AmountPair'
+          description: 'Position value at this timestamp (`native` = numeraire-token units,
+
+            `usd` = `native` × historical USD price; null when unavailable).'
