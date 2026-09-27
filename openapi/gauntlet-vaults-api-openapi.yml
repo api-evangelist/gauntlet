@@ -222,18 +222,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
-    FeaturedVaultsResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeaturedVault'
-        meta:
-          $ref: '#/components/schemas/ListMeta'
     ErrorResponse:
       type: object
       description: Standard error response envelope returned on 4xx/5xx
@@ -242,202 +230,6 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/ErrorBody'
-    VaultMetrics:
-      type: object
-      required:
-      - tvl
-      - unit_price
-      - total_supply
-      properties:
-        apy_30d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_7d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_90d:
-          type:
-          - number
-          - 'null'
-          format: double
-        as_of:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        total_supply:
-          type: string
-        tvl:
-          $ref: '#/components/schemas/AmountPair'
-        unit_price:
-          type: string
-    TokenRef:
-      type: object
-      required:
-      - address
-      properties:
-        address:
-          type: string
-        decimals:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        symbol:
-          type:
-          - string
-          - 'null'
-    VaultDetailResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/VaultDetail'
-        meta:
-          $ref: '#/components/schemas/BasicMeta'
-    ListMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      - count
-      properties:
-        count:
-          type: integer
-          format: int64
-          description: Rows in this response.
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-    PartialResponseError:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for the isolated item failure.
-        message:
-          type: string
-          description: Human-readable error message.
-        resource_id:
-          type:
-          - string
-          - 'null'
-          description: Resource that failed inside the aggregate response, when known.
-    VaultTimeseriesResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultTimeseriesPoint'
-        meta:
-          $ref: '#/components/schemas/TimeseriesMeta'
-    ErrorBody:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
-        details: {}
-        message:
-          type: string
-          description: Human-readable error message
-    BasicMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      properties:
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-    TimeseriesMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      - count
-      - limit
-      properties:
-        count:
-          type: integer
-          format: int64
-          description: Number of points in this response.
-        end:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        limit:
-          type: integer
-          format: int64
-          description: Page-size cap actually applied.
-        next_cursor:
-          type:
-          - string
-          - 'null'
-          description: Set when more pages exist; pass back as `?next=`.
-        partial_errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PartialResponseError'
-          description: Item-scoped failures isolated from an aggregate response.
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-        start:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Window bounds the response covers (echoes the request when set).
-    CuratedTvl:
-      type: object
-      description: 'USD amount on curated aggregates: decimal string, `null` when the
-
-        pricing service is not configured.'
-      properties:
-        usd:
-          type:
-          - string
-          - 'null'
-    AmountPair:
-      type: object
-      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
-
-        `native` is always present; `usd` is JSON null when pricing is unavailable.'
-      required:
-      - native
-      properties:
-        native:
-          type: string
-        usd:
-          type:
-          - string
-          - 'null'
     FeaturedVault:
       type: object
       required:
@@ -519,6 +311,243 @@ components:
           description: 'Per-deployment API vault ids (`{chainId}:{address}`, same order
 
             as `chains`) for `/v1/vaults/{vault_id}` links.'
+    VaultDetailResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/VaultDetail'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    VaultDetail:
+      type: object
+      required:
+      - vault_id
+      - chain_id
+      - address
+      - vault_type
+      - name
+      - symbol
+      - numeraire_token
+      - metrics
+      properties:
+        address:
+          type: string
+        chain_id:
+          type: integer
+          format: int64
+        metrics:
+          $ref: '#/components/schemas/VaultMetrics'
+        name:
+          type: string
+        numeraire_token:
+          $ref: '#/components/schemas/TokenRef'
+        symbol:
+          type: string
+        vault_id:
+          type: string
+        vault_type:
+          type: string
+    VaultTimeseriesResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultTimeseriesPoint'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
+    AmountPair:
+      type: object
+      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
+
+        `native` is always present; `usd` is JSON null when pricing is unavailable.'
+      required:
+      - native
+      properties:
+        native:
+          type: string
+        usd:
+          type:
+          - string
+          - 'null'
+    PartialResponseError:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for the isolated item failure.
+        message:
+          type: string
+          description: Human-readable error message.
+        resource_id:
+          type:
+          - string
+          - 'null'
+          description: Resource that failed inside the aggregate response, when known.
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    FeaturedVaultsResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeaturedVault'
+        meta:
+          $ref: '#/components/schemas/ListMeta'
+    VaultMetrics:
+      type: object
+      required:
+      - tvl
+      - unit_price
+      - total_supply
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        as_of:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        total_supply:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/AmountPair'
+        unit_price:
+          type: string
+    TokenRef:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          type: string
+        decimals:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        symbol:
+          type:
+          - string
+          - 'null'
+    CuratedTvl:
+      type: object
+      description: 'USD amount on curated aggregates: decimal string, `null` when the
+
+        pricing service is not configured.'
+      properties:
+        usd:
+          type:
+          - string
+          - 'null'
+    TimeseriesMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      - count
+      - limit
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: Number of points in this response.
+        end:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        limit:
+          type: integer
+          format: int64
+          description: Page-size cap actually applied.
+        next_cursor:
+          type:
+          - string
+          - 'null'
+          description: Set when more pages exist; pass back as `?next=`.
+        partial_errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialResponseError'
+          description: Item-scoped failures isolated from an aggregate response.
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+        start:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Window bounds the response covers (echoes the request when set).
+    ListMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      - count
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: Rows in this response.
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
     VaultTimeseriesPoint:
       type: object
       required:
@@ -550,33 +579,4 @@ components:
         tvl:
           $ref: '#/components/schemas/AmountPair'
         unit_price:
-          type: string
-    VaultDetail:
-      type: object
-      required:
-      - vault_id
-      - chain_id
-      - address
-      - vault_type
-      - name
-      - symbol
-      - numeraire_token
-      - metrics
-      properties:
-        address:
-          type: string
-        chain_id:
-          type: integer
-          format: int64
-        metrics:
-          $ref: '#/components/schemas/VaultMetrics'
-        name:
-          type: string
-        numeraire_token:
-          $ref: '#/components/schemas/TokenRef'
-        symbol:
-          type: string
-        vault_id:
-          type: string
-        vault_type:
           type: string
