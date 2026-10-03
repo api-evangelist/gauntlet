@@ -51,23 +51,6 @@ paths:
           description: Pricing service not configured
 components:
   schemas:
-    TimeseriesResponse:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeseriesPoint'
-    HistoricalPriceValue:
-      type: object
-      required:
-      - usd
-      properties:
-        usd:
-          type: number
-          format: double
     LatestPriceResponse:
       type: object
       required:
@@ -92,16 +75,6 @@ components:
           type: string
         timestamp:
           type: string
-    TimeseriesPoint:
-      type: object
-      required:
-      - timestamp
-      - price
-      properties:
-        price:
-          $ref: '#/components/schemas/HistoricalPriceValue'
-        timestamp:
-          type: string
     PriceValue:
       type: object
       required:
@@ -112,6 +85,33 @@ components:
           type: integer
           format: int32
           minimum: 0
+        usd:
+          type: number
+          format: double
+    TimeseriesResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeseriesPoint'
+    TimeseriesPoint:
+      type: object
+      required:
+      - timestamp
+      - price
+      properties:
+        price:
+          $ref: '#/components/schemas/HistoricalPriceValue'
+        timestamp:
+          type: string
+    HistoricalPriceValue:
+      type: object
+      required:
+      - usd
+      properties:
         usd:
           type: number
           format: double
