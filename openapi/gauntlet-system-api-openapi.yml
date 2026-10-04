@@ -43,6 +43,21 @@ paths:
                   $ref: '#/components/schemas/ChainSyncStatus'
 components:
   schemas:
+    HealthResponse:
+      type: object
+      required:
+      - status
+      - version
+      - uptime_seconds
+      properties:
+        status:
+          type: string
+        uptime_seconds:
+          type: integer
+          format: int64
+          minimum: 0
+        version:
+          type: string
     ChainSyncStatus:
       type: object
       required:
@@ -66,18 +81,3 @@ components:
         latest_timestamp:
           type: integer
           format: int64
-    HealthResponse:
-      type: object
-      required:
-      - status
-      - version
-      - uptime_seconds
-      properties:
-        status:
-          type: string
-        uptime_seconds:
-          type: integer
-          format: int64
-          minimum: 0
-        version:
-          type: string

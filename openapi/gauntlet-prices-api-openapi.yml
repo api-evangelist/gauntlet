@@ -75,28 +75,14 @@ components:
           type: string
         timestamp:
           type: string
-    PriceValue:
+    HistoricalPriceValue:
       type: object
       required:
       - usd
-      - decimals
       properties:
-        decimals:
-          type: integer
-          format: int32
-          minimum: 0
         usd:
           type: number
           format: double
-    TimeseriesResponse:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeseriesPoint'
     TimeseriesPoint:
       type: object
       required:
@@ -107,11 +93,25 @@ components:
           $ref: '#/components/schemas/HistoricalPriceValue'
         timestamp:
           type: string
-    HistoricalPriceValue:
+    TimeseriesResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeseriesPoint'
+    PriceValue:
       type: object
       required:
       - usd
+      - decimals
       properties:
+        decimals:
+          type: integer
+          format: int32
+          minimum: 0
         usd:
           type: number
           format: double

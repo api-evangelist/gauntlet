@@ -222,6 +222,47 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
+    VaultDetail:
+      type: object
+      required:
+      - vault_id
+      - chain_id
+      - address
+      - vault_type
+      - name
+      - symbol
+      - numeraire_token
+      - metrics
+      properties:
+        address:
+          type: string
+        chain_id:
+          type: integer
+          format: int64
+        metrics:
+          $ref: '#/components/schemas/VaultMetrics'
+        name:
+          type: string
+        numeraire_token:
+          $ref: '#/components/schemas/TokenRef'
+        symbol:
+          type: string
+        vault_id:
+          type: string
+        vault_type:
+          type: string
+    FeaturedVaultsResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeaturedVault'
+        meta:
+          $ref: '#/components/schemas/ListMeta'
     AmountPair:
       type: object
       description: 'Decimal-string metric paired across native (numeraire-token) and USD.
@@ -236,6 +277,111 @@ components:
           type:
           - string
           - 'null'
+    VaultDetailResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/VaultDetail'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    VaultMetrics:
+      type: object
+      required:
+      - tvl
+      - unit_price
+      - total_supply
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        as_of:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        total_supply:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/AmountPair'
+        unit_price:
+          type: string
+    CuratedTvl:
+      type: object
+      description: 'USD amount on curated aggregates: decimal string, `null` when the
+
+        pricing service is not configured.'
+      properties:
+        usd:
+          type:
+          - string
+          - 'null'
+    ListMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      - count
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: Rows in this response.
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    VaultTimeseriesResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultTimeseriesPoint'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
     TimeseriesMeta:
       type: object
       required:
@@ -280,73 +426,6 @@ components:
           - 'null'
           format: date-time
           description: Window bounds the response covers (echoes the request when set).
-    FeaturedVaultsResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeaturedVault'
-        meta:
-          $ref: '#/components/schemas/ListMeta'
-    TokenRef:
-      type: object
-      required:
-      - address
-      properties:
-        address:
-          type: string
-        decimals:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        symbol:
-          type:
-          - string
-          - 'null'
-    VaultTimeseriesResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultTimeseriesPoint'
-        meta:
-          $ref: '#/components/schemas/TimeseriesMeta'
-    ListMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      - count
-      properties:
-        count:
-          type: integer
-          format: int64
-          description: Rows in this response.
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-    BasicMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      properties:
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
     PartialResponseError:
       type: object
       required:
@@ -364,6 +443,54 @@ components:
           - string
           - 'null'
           description: Resource that failed inside the aggregate response, when known.
+    TokenRef:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          type: string
+        decimals:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        symbol:
+          type:
+          - string
+          - 'null'
+    VaultTimeseriesPoint:
+      type: object
+      required:
+      - timestamp
+      - tvl
+      - unit_price
+      - total_supply
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        timestamp:
+          type: string
+          format: date-time
+        total_supply:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/AmountPair'
+        unit_price:
+          type: string
     FeaturedVault:
       type: object
       required:
@@ -453,130 +580,3 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/ErrorBody'
-    VaultDetail:
-      type: object
-      required:
-      - vault_id
-      - chain_id
-      - address
-      - vault_type
-      - name
-      - symbol
-      - numeraire_token
-      - metrics
-      properties:
-        address:
-          type: string
-        chain_id:
-          type: integer
-          format: int64
-        metrics:
-          $ref: '#/components/schemas/VaultMetrics'
-        name:
-          type: string
-        numeraire_token:
-          $ref: '#/components/schemas/TokenRef'
-        symbol:
-          type: string
-        vault_id:
-          type: string
-        vault_type:
-          type: string
-    VaultMetrics:
-      type: object
-      required:
-      - tvl
-      - unit_price
-      - total_supply
-      properties:
-        apy_30d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_7d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_90d:
-          type:
-          - number
-          - 'null'
-          format: double
-        as_of:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        total_supply:
-          type: string
-        tvl:
-          $ref: '#/components/schemas/AmountPair'
-        unit_price:
-          type: string
-    VaultDetailResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/VaultDetail'
-        meta:
-          $ref: '#/components/schemas/BasicMeta'
-    VaultTimeseriesPoint:
-      type: object
-      required:
-      - timestamp
-      - tvl
-      - unit_price
-      - total_supply
-      properties:
-        apy_30d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_7d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_90d:
-          type:
-          - number
-          - 'null'
-          format: double
-        timestamp:
-          type: string
-          format: date-time
-        total_supply:
-          type: string
-        tvl:
-          $ref: '#/components/schemas/AmountPair'
-        unit_price:
-          type: string
-    CuratedTvl:
-      type: object
-      description: 'USD amount on curated aggregates: decimal string, `null` when the
-
-        pricing service is not configured.'
-      properties:
-        usd:
-          type:
-          - string
-          - 'null'
-    ErrorBody:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
-        details: {}
-        message:
-          type: string
-          description: Human-readable error message
