@@ -74,6 +74,27 @@ components:
         updated_at:
           type: string
           format: date-time
+    TvlResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/TvlSummary'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
     TvlBreakdown:
       type: object
       required:
@@ -94,6 +115,21 @@ components:
         updated_at:
           type: string
           format: date-time
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+    TvlAmount:
+      type: object
+      required:
+      - usd
+      properties:
+        usd:
+          type: string
     TvlTotal:
       type: object
       required:
@@ -111,23 +147,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    TvlResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/TvlSummary'
-        meta:
-          $ref: '#/components/schemas/BasicMeta'
-    TvlAmount:
-      type: object
-      required:
-      - usd
-      properties:
-        usd:
-          type: string
     ErrorBody:
       type: object
       required:
@@ -141,22 +160,3 @@ components:
         message:
           type: string
           description: Human-readable error message
-    BasicMeta:
-      type: object
-      required:
-      - request_id
-      - refreshed_at
-      properties:
-        refreshed_at:
-          type: string
-          format: date-time
-        request_id:
-          type: string
-    ErrorResponse:
-      type: object
-      description: Standard error response envelope returned on 4xx/5xx
-      required:
-      - error
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorBody'
