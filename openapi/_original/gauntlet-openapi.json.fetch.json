@@ -1,0 +1,12 @@
+{
+ "url": "https://api.gauntlet.xyz/docs/openapi.json",
+ "final": "https://api.gauntlet.xyz/docs/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 59601,
+ "sha256": "f6c688a129ce967b01653dc9ed39b3103d7a7ffd8081b41573f8e8e07fe0cc58",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

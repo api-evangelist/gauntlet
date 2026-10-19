@@ -1,0 +1,213 @@
+openapi: 3.2.0
+info:
+  title: Gauntlet Strategies API
+  description: Gauntlet vault data, user positions, and event analytics API.
+  contact:
+    name: Gauntlet
+    url: https://gauntlet.xyz
+  license:
+    name: ''
+  version: 1.0.0
+tags:
+- name: Strategies
+paths:
+  /v1/strategies:
+    get:
+      tags:
+      - Strategies
+      summary: List curated strategies
+      description: 'Returns one card per curated strategy (Earn, Prime Lending, …) with aggregate metrics across the strategy''s visible vaults: total TVL in USD, the highest 7/30/90-day APY ("APY up to"), and the vault count. TVL sums only vaults whose numeraire has a USD price; unpriced vaults still count toward `vault_count` and the APY maxes. Strategy membership and visibility are curated by Gauntlet; metrics come from the indexer and are refreshed continuously. Ordered by curated display order.'
+      operationId: list_strategies
+      responses:
+        '200':
+          description: List of strategy cards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategyListResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Data source unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    PartialResponseError:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for the isolated item failure.
+        message:
+          type: string
+          description: Human-readable error message.
+        resource_id:
+          type:
+          - string
+          - 'null'
+          description: Resource that failed inside the aggregate response, when known.
+    ListMeta:
+      type: object
+      description: 'Documented metadata for list endpoints; pagination fields are omitted
+
+        by unpaginated responses.'
+      required:
+      - request_id
+      - refreshed_at
+      - count
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: Number of items in this response.
+        limit:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          description: Page-size cap actually applied to paginated lists.
+        next_cursor:
+          type:
+          - string
+          - 'null'
+          description: Set when more pages exist; pass back as `?next=`.
+        partial_errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialResponseError'
+          description: Item-scoped failures isolated from an aggregate response.
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    CuratedTvl:
+      type: object
+      description: 'USD amount on curated aggregates: decimal string, `null` when the
+
+        pricing service is not configured.'
+      properties:
+        usd:
+          type:
+          - string
+          - 'null'
+    StrategyListResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StrategyCard'
+        meta:
+          $ref: '#/components/schemas/ListMeta'
+    StrategyCard:
+      type: object
+      required:
+      - id
+      - name
+      - vault_count
+      - tvl
+      properties:
+        apy_30d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Highest 30-day APY across the strategy's vaults.
+        apy_7d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: 'Highest 7-day APY across the strategy''s vaults ("APY Up To"),
+
+            fraction (0.0953 = 9.53%). `null` while every vault''s window is
+
+            still warming up. Vaults with APY display disabled do not
+
+            contribute to this aggregate.'
+        apy_90d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Highest 90-day APY across the strategy's vaults.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Marketing description of the strategy.
+        id:
+          type: string
+          description: 'Strategy identifier from the admin vocabulary (e.g. `earn`,
+
+            `prime_lending`).'
+        name:
+          type: string
+          description: Display name (e.g. "Prime Lending").
+        short_description:
+          type:
+          - string
+          - 'null'
+          description: 'Card-length copy (e.g. "Conservative lending yield with low
+
+            risk"). `null` when the curator hasn''t written any; consumers
+
+            decide whether to fall back to `description`.'
+        tvl:
+          $ref: '#/components/schemas/CuratedTvl'
+          description: 'Aggregate TVL across the strategy''s priced vaults ("Total
+
+            Supply"). Vaults whose numeraire has no USD price are left out of
+
+            the sum but still count toward `vault_count` and the APY maxes.'
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: 'Most recent indexer snapshot among the strategy''s vaults; `null`
+
+            in the degenerate case where no matched row carried a timestamp.'
+        vault_count:
+          type: integer
+          format: int64
+          description: 'Visible curated vaults in this strategy that matched at least one
+
+            indexed deployment.'
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'

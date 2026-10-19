@@ -16,7 +16,7 @@ paths:
       tags:
       - Vaults
       summary: List Gauntlet-curated vaults
-      description: 'Returns identification-only rows for the admin-curated visible vaults, ordered most-recent-first; pass `?include_hidden=true` for every enabled vault (hidden included, disabled never). Use `/{vault_id}` for current metrics, `/{vault_id}/definition` for the full vault definition, `/{vault_id}/timeseries` for history.
+      description: 'Returns identification-only rows for the admin-curated visible vaults, ordered most-recent-first; pass `?include_hidden=true` for every enabled vault (hidden included, disabled never). Each row''s `group.id` groups deployments of the same logical Admin vault, `group.slug` is its unique public route, and `group.is_primary` identifies its representative. Use `/{vault_id}` for current metrics, `/{vault_id}/definition` for the full vault definition, `/{vault_id}/timeseries` for history.
 
 
         Cursor-paginated, but the default page size is the cap so most callers don''t need to think about it — pass `meta.next_cursor` back as `?next=` only if the result exceeds 1000 vaults.'
@@ -44,6 +44,10 @@ paths:
       responses:
         '200':
           description: List of vaults
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultListResponse'
         '401':
           description: Missing or invalid auth
           content:
@@ -82,12 +86,215 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/slug/{slug}:
+    get:
+      tags:
+      - Vaults
+      summary: Get vault deployments by slug
+      description: Returns every indexed deployment associated with one exact Admin vault slug. The lookup serves visible and hidden enabled vaults without making hidden vaults enumerable; disabled and unknown slugs return 404. Each item has the same shape as an item from `GET /v1/vaults`.
+      operationId: get_vaults_by_slug
+      parameters:
+      - name: slug
+        in: path
+        description: Admin-curated public vault slug
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deployments for the vault slug
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultListResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault slug not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Data source unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/slug/{slug}/primary/timeseries:
+    get:
+      tags:
+      - Vaults
+      summary: Get primary deployment timeseries by vault slug
+      description: Returns historical metric data for the Admin-selected primary deployment of an enabled logical vault. `meta.resolved_vault_id` identifies the concrete deployment. The response and query parameters are otherwise identical to `/{vault_id}/timeseries`; use this route when callers know the stable public vault slug but should not depend on its current chain or address.
+      operationId: get_primary_vault_timeseries_by_slug
+      parameters:
+      - name: slug
+        in: path
+        description: Admin-curated public vault slug
+        required: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: 'Window start: ISO 8601 date or RFC 3339 timestamp.'
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: 'Window end: ISO 8601 date or RFC 3339 timestamp.'
+        required: false
+        schema:
+          type: string
+      - name: next
+        in: query
+        description: Opaque cursor from previous `meta.next_cursor`.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Page size (1–10000, default 1000).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: 'Sort direction: `asc` (default) or `desc`.'
+        required: false
+        schema:
+          type: string
+      - name: granularity
+        in: query
+        description: 'Sampling granularity: `day` (default), `hour`, `week`, or `month`.'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Primary deployment timeseries data points
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultTimeseriesResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault slug not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Data source or vault curation unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/slug/{slug}/timeseries:
+    get:
+      tags:
+      - Vaults
+      summary: Get vault history by slug
+      description: Returns USD TVL and outstanding share supply summed across every currently linked deployment of an enabled logical vault, including hidden vaults. Uses UTC-aligned snapshots and timestamp pagination. A deployment contributes zero before its indexed creation time; after creation, missing snapshots or USD prices produce null TVL, never a partial sum. Does not carry values forward. Missing supply or a missing snapshot after deployment creation produces null total_supply, independent of USD price availability. APY and unit_price come from the Admin-selected primary deployment at the same timestamp, identified by meta.resolved_vault_id. Missing primary snapshots yield null primary metrics; APY respects Admin visibility. TVL is USD-only because deployment numeraires may differ; native TVL remains available on the primary/per-deployment endpoints. This is a sum of deployment TVLs, not the legacy asset-position valuation. Unknown or disabled slugs return 404; incomplete deployment metadata returns 503.
+      operationId: get_vault_timeseries_by_slug
+      parameters:
+      - name: slug
+        in: path
+        description: Admin-curated public vault slug
+        required: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: 'Window start: ISO 8601 date or RFC 3339 timestamp.'
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: 'Window end: ISO 8601 date or RFC 3339 timestamp.'
+        required: false
+        schema:
+          type: string
+      - name: next
+        in: query
+        description: Opaque cursor from previous `meta.next_cursor`.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Page size (1–10000, default 1000).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: 'Sort direction: `asc` (default) or `desc`.'
+        required: false
+        schema:
+          type: string
+      - name: granularity
+        in: query
+        description: 'Sampling granularity: `day` (default), `hour`, `week`, or `month`.'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Aggregate USD TVL and share supply with primary deployment metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultGroupTimeseriesResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault slug not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Data source or vault curation unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/vaults/{vault_id}:
     get:
       tags:
       - Vaults
       summary: Get current vault metrics
-      description: Returns the current metrics snapshot for a vault — same metric shape that `/timeseries` emits per point, so this is `current point` and timeseries is `historical points`. The vault's protocol-specific definition (fees, hooks, curator, etc.) lives on `/{vault_id}/definition`.
+      description: Returns the current metrics snapshot for a vault — same metric shape that `/timeseries` emits per point, so this is `current point` and timeseries is `historical points`. The vault's Admin grouping is included when the deployment is associated. The protocol-specific definition (fees, hooks, curator, etc.) lives on `/{vault_id}/definition`.
       operationId: get_vault
       parameters:
       - name: vault_id
@@ -111,6 +318,57 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Vault not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/vaults/{vault_id}/allocations:
+    get:
+      tags:
+      - Vaults
+      summary: Get current vault allocations
+      description: Returns current allocations through a Gaia-owned, source-independent contract. Aera API is the initial source, but its metric-group schema is normalized into flat allocation values with discriminated targets. Use `/{vault_id}` or `/{vault_id}/timeseries` for vault-level metrics.
+      operationId: get_vault_allocations
+      parameters:
+      - name: vault_id
+        in: path
+        description: Vault identifier (CAIP-10 `chainId:address`)
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Current vault allocations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultAllocationsResponse'
+        '401':
+          description: Missing or invalid auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Vault not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Invalid vault identifier or non-Aera vault
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Allocation data source unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Vault metadata source unavailable
           content:
             application/json:
               schema:
@@ -222,6 +480,295 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
+    VaultDetailResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/VaultDetail'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
+    VaultMetrics:
+      type: object
+      required:
+      - tvl
+      - unit_price
+      - total_supply
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        as_of:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        total_supply:
+          type: string
+        tvl:
+          $ref: '#/components/schemas/AmountPair'
+        unit_price:
+          type: string
+    CuratedTvl:
+      type: object
+      description: 'USD amount on curated aggregates: decimal string, `null` when the
+
+        pricing service is not configured.'
+      properties:
+        usd:
+          type:
+          - string
+          - 'null'
+    AllocationTarget:
+      oneOf:
+      - type: object
+        required:
+        - chain_id
+        - address
+        - symbol
+        - strategy_type
+        - kind
+        properties:
+          address:
+            type: string
+          chain_id:
+            type: integer
+            format: int64
+          flow:
+            oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/AllocationFlow'
+          kind:
+            type: string
+            enum:
+            - asset
+          name:
+            type:
+            - string
+            - 'null'
+          protocol:
+            oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/AllocationProtocol'
+          strategy_type:
+            type: string
+          symbol:
+            type: string
+    VaultGroupTimeseriesPoint:
+      allOf:
+      - $ref: '#/components/schemas/PrimaryVaultTimeseriesMetrics'
+      - type: object
+        required:
+        - timestamp
+        - tvl
+        properties:
+          timestamp:
+            type: string
+            format: date-time
+          total_supply:
+            type:
+            - string
+            - 'null'
+            description: 'Outstanding shares summed across linked deployments. Null if an existing
+
+              deployment has a missing snapshot or supply; independent of USD pricing.'
+          tvl:
+            $ref: '#/components/schemas/CuratedTvl'
+            description: 'Sum across all linked deployments. Null if an existing deployment
+
+              has a missing snapshot or USD price; never a partial sum.'
+    StrategyRef:
+      type: object
+      description: Curated strategy assignment from the admin registry.
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: 'Strategy label id (`prime_lending`, `earn`, …) — matches
+
+            `/v1/strategies` card ids.'
+        name:
+          type: string
+          description: Display name (`Prime Lending`).
+    PrimaryVaultTimeseriesMetrics:
+      type: object
+      description: 'Deployment-local metrics. Null when the primary has no snapshot at this
+
+        timestamp; APY also respects the Admin visibility setting.'
+      properties:
+        apy_30d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_7d:
+          type:
+          - number
+          - 'null'
+          format: double
+        apy_90d:
+          type:
+          - number
+          - 'null'
+          format: double
+        unit_price:
+          type:
+          - string
+          - 'null'
+          description: Numeraire-token units per share on the primary deployment.
+    VaultTimeseriesResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultTimeseriesPoint'
+        meta:
+          $ref: '#/components/schemas/TimeseriesMeta'
+    AllocationProtocol:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    ErrorResponse:
+      type: object
+      description: Standard error response envelope returned on 4xx/5xx
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+    PartialResponseError:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for the isolated item failure.
+        message:
+          type: string
+          description: Human-readable error message.
+        resource_id:
+          type:
+          - string
+          - 'null'
+          description: Resource that failed inside the aggregate response, when known.
+    AmountPair:
+      type: object
+      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
+
+        `native` is always present; `usd` is JSON null when pricing is unavailable.'
+      required:
+      - native
+      properties:
+        native:
+          type: string
+        usd:
+          type:
+          - string
+          - 'null'
+    ErrorBody:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
+        details: {}
+        message:
+          type: string
+          description: Human-readable error message
+    VaultDetail:
+      type: object
+      required:
+      - vault_id
+      - chain_id
+      - address
+      - vault_type
+      - name
+      - symbol
+      - numeraire_token
+      - metrics
+      properties:
+        address:
+          type: string
+        chain_id:
+          type: integer
+          format: int64
+        group:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/VaultGroupRef'
+            description: 'Admin-curated logical group. Absent only when the deployment is not yet
+
+              associated with an Admin vault group.'
+        metrics:
+          $ref: '#/components/schemas/VaultMetrics'
+        name:
+          type: string
+        numeraire_token:
+          $ref: '#/components/schemas/TokenRef'
+        strategy:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/StrategyRef'
+            description: 'Curated strategy from the admin registry; `null` when the vault
+
+              has no strategy tag.'
+        successor_vault_id:
+          type:
+          - string
+          - 'null'
+          description: 'CAIP id of the vault that replaces this one on the same chain
+
+            (Morpho V1 to V2 today); `null` when there is no visible
+
+            successor. Consumers use it to point holders at the new vault.'
+        symbol:
+          type: string
+        vault_id:
+          type: string
+        vault_type:
+          type: string
+    BasicMeta:
+      type: object
+      required:
+      - request_id
+      - refreshed_at
+      properties:
+        refreshed_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
     TimeseriesMeta:
       type: object
       required:
@@ -260,39 +807,91 @@ components:
           format: date-time
         request_id:
           type: string
+        resolved_vault_id:
+          type:
+          - string
+          - 'null'
+          description: 'Primary deployment selected for deployment-local metrics by a slug
+
+            route. The aggregate slug route still sums TVL and supply across deployments.
+
+            Omitted when the deployment is already identified in the request path.'
         start:
           type:
           - string
           - 'null'
           format: date-time
           description: Window bounds the response covers (echoes the request when set).
-    ErrorBody:
+    VaultGroupRef:
       type: object
+      description: Admin-curated logical grouping for a deployment-level vault row.
       required:
-      - code
-      - message
+      - id
+      - slug
+      - is_primary
+      - is_stable
       properties:
-        code:
-          type: string
-          description: Machine-readable error code (e.g. `NOT_FOUND`, `UNAUTHORIZED`)
-        details: {}
-        message:
-          type: string
-          description: Human-readable error message
-    AmountPair:
-      type: object
-      description: 'Decimal-string metric paired across native (numeraire-token) and USD.
-
-        `native` is always present; `usd` is JSON null when pricing is unavailable.'
-      required:
-      - native
-      properties:
-        native:
-          type: string
-        usd:
+        deployment_date:
           type:
           - string
           - 'null'
+          description: Admin-curated deployment date (`YYYY-MM-DD`).
+        description:
+          type:
+          - string
+          - 'null'
+          description: Admin-curated long-form detail-page copy.
+        id:
+          type: string
+          description: Stable internal group id from the Admin vault registry (`vlt_176`).
+        is_primary:
+          type: boolean
+          description: Whether this deployment is the group's primary representative.
+        is_stable:
+          type: boolean
+          description: Whether performance views should use a stable-denominated basis.
+        slug:
+          type: string
+          description: Unique, curator-managed public route (`stgusda`).
+    VaultListResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultDetail'
+        meta:
+          $ref: '#/components/schemas/ListMeta'
+    Allocation:
+      type: object
+      required:
+      - category
+      - target
+      properties:
+        allocation:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Fraction of the parent vault allocated to this target (1.0 = 100%).
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        amount_usd:
+          type:
+          - number
+          - 'null'
+          format: double
+        category:
+          type: string
+          description: Source-independent category used by consumers to select allocation sections.
+        target:
+          $ref: '#/components/schemas/AllocationTarget'
     TokenRef:
       type: object
       required:
@@ -309,176 +908,21 @@ components:
           type:
           - string
           - 'null'
-    VaultMetrics:
+    VaultAllocationsResponse:
       type: object
       required:
-      - tvl
-      - unit_price
-      - total_supply
+      - meta
+      - data
       properties:
-        apy_30d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_7d:
-          type:
-          - number
-          - 'null'
-          format: double
-        apy_90d:
-          type:
-          - number
-          - 'null'
-          format: double
-        as_of:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        total_supply:
-          type: string
-        tvl:
-          $ref: '#/components/schemas/AmountPair'
-        unit_price:
-          type: string
-    VaultDetail:
-      type: object
-      required:
-      - vault_id
-      - chain_id
-      - address
-      - vault_type
-      - name
-      - symbol
-      - numeraire_token
-      - metrics
-      properties:
-        address:
-          type: string
-        chain_id:
-          type: integer
-          format: int64
-        metrics:
-          $ref: '#/components/schemas/VaultMetrics'
-        name:
-          type: string
-        numeraire_token:
-          $ref: '#/components/schemas/TokenRef'
-        symbol:
-          type: string
-        vault_id:
-          type: string
-        vault_type:
-          type: string
-    FeaturedVault:
-      type: object
-      required:
-      - slug
-      - name
-      - chains
-      - tvl
-      - vault_ids
-      properties:
-        apy_30d_max:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Highest 30-day APY across the vault's deployments.
-        apy_7d_max:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: 'Highest 7-day APY across the vault''s deployments, fraction
-
-            (0.0573 = 5.73%). `null` while every window is warming up.'
-        apy_90d_max:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Highest 90-day APY across the vault's deployments.
-        chains:
-          type: array
-          items:
-            type: string
-          description: Chain slugs the vault is deployed on, highest-TVL first.
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'Curated marketing description; `null` when the curator hasn''t
-
-            written one.'
-        name:
-          type: string
-          description: Curated display name.
-        short_description:
-          type:
-          - string
-          - 'null'
-          description: 'Card-length copy (e.g. "Conservative lending yield with low
-
-            risk"). `null` when the curator hasn''t written any; consumers
-
-            decide whether to fall back to `description`.'
-        slug:
-          type: string
-          description: Admin registry slug for the logical vault (stable identifier).
-        supply_token:
-          type:
-          - string
-          - 'null'
-          description: 'Supply (numeraire) token symbol, from the highest-TVL deployment
-
-            that reports one.'
-        tvl:
-          $ref: '#/components/schemas/CuratedTvl'
-          description: Aggregate TVL across the vault's deployments ("Total Supply").
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: 'Most recent indexer snapshot among the vault''s deployments;
-
-            `null` when no deployment carried a usable timestamp.'
-        vault_ids:
-          type: array
-          items:
-            type: string
-          description: 'Per-deployment API vault ids (`{chainId}:{address}`, same order
-
-            as `chains`) for `/v1/vaults/{vault_id}` links.'
-    PartialResponseError:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for the isolated item failure.
-        message:
-          type: string
-          description: Human-readable error message.
-        resource_id:
-          type:
-          - string
-          - 'null'
-          description: Resource that failed inside the aggregate response, when known.
-    ErrorResponse:
-      type: object
-      description: Standard error response envelope returned on 4xx/5xx
-      required:
-      - error
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorBody'
+        data:
+          $ref: '#/components/schemas/VaultAllocations'
+        meta:
+          $ref: '#/components/schemas/BasicMeta'
     ListMeta:
       type: object
+      description: 'Documented metadata for list endpoints; pagination fields are omitted
+
+        by unpaginated responses.'
       required:
       - request_id
       - refreshed_at
@@ -487,7 +931,25 @@ components:
         count:
           type: integer
           format: int64
-          description: Rows in this response.
+          description: Number of items in this response.
+        limit:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          description: Page-size cap actually applied to paginated lists.
+        next_cursor:
+          type:
+          - string
+          - 'null'
+          description: Set when more pages exist; pass back as `?next=`.
+        partial_errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialResponseError'
+          description: Item-scoped failures isolated from an aggregate response.
         refreshed_at:
           type: string
           format: date-time
@@ -525,6 +987,112 @@ components:
           $ref: '#/components/schemas/AmountPair'
         unit_price:
           type: string
+    AllocationFlowKind:
+      type: string
+      enum:
+      - pending_deposit
+      - pending_redemption
+    FeaturedVault:
+      type: object
+      required:
+      - vault_id
+      - slug
+      - name
+      - chains
+      - tvl
+      - vault_ids
+      properties:
+        apy_30d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Highest 30-day APY across the vault's deployments.
+        apy_7d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: 'Highest 7-day APY across the vault''s deployments, fraction
+
+            (0.0573 = 5.73%). `null` while every window is warming up or APY
+
+            display is disabled for this vault.'
+        apy_90d_max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Highest 90-day APY across the vault's deployments.
+        chains:
+          type: array
+          items:
+            type: string
+          description: Chain slugs the vault is deployed on, highest-TVL first.
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Curated marketing description; `null` when the curator hasn''t
+
+            written one.'
+        name:
+          type: string
+          description: 'Curated display name; falls back to the registry id when the
+
+            curator hasn''t named the vault yet. `vault_id` carries the
+
+            stable logical identifier.'
+        short_description:
+          type:
+          - string
+          - 'null'
+          description: 'Card-length copy (e.g. "Conservative lending yield with low
+
+            risk"). `null` when the curator hasn''t written any; consumers
+
+            decide whether to fall back to `description`.'
+        slug:
+          type: string
+          description: Stable public route for the logical vault group.
+        supply_token:
+          type:
+          - string
+          - 'null'
+          description: 'Supply (numeraire) token symbol, from the highest-TVL deployment
+
+            that reports one.'
+        tvl:
+          $ref: '#/components/schemas/CuratedTvl'
+          description: Aggregate TVL across the vault's deployments ("Total Supply").
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: 'Most recent indexer snapshot among the vault''s deployments;
+
+            `null` when no deployment carried a usable timestamp.'
+        vault_id:
+          type: string
+          description: Stable logical vault id assigned by Admin.
+        vault_ids:
+          type: array
+          items:
+            type: string
+          description: 'Per-deployment API vault ids (`{chainId}:{address}`, same order
+
+            as `chains`) for `/v1/vaults/{vault_id}` links.'
+    AllocationFlow:
+      type: object
+      required:
+      - kind
+      - target_vault_address
+      properties:
+        kind:
+          $ref: '#/components/schemas/AllocationFlowKind'
+        target_vault_address:
+          type: string
     FeaturedVaultsResponse:
       type: object
       required:
@@ -537,17 +1105,7 @@ components:
             $ref: '#/components/schemas/FeaturedVault'
         meta:
           $ref: '#/components/schemas/ListMeta'
-    CuratedTvl:
-      type: object
-      description: 'USD amount on curated aggregates: decimal string, `null` when the
-
-        pricing service is not configured.'
-      properties:
-        usd:
-          type:
-          - string
-          - 'null'
-    VaultTimeseriesResponse:
+    VaultGroupTimeseriesResponse:
       type: object
       required:
       - meta
@@ -556,27 +1114,23 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/VaultTimeseriesPoint'
+            $ref: '#/components/schemas/VaultGroupTimeseriesPoint'
         meta:
           $ref: '#/components/schemas/TimeseriesMeta'
-    BasicMeta:
+    VaultAllocations:
       type: object
       required:
-      - request_id
-      - refreshed_at
+      - vault_id
+      - allocations
       properties:
-        refreshed_at:
-          type: string
+        allocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allocation'
+        as_of:
+          type:
+          - string
+          - 'null'
           format: date-time
-        request_id:
+        vault_id:
           type: string
-    VaultDetailResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/VaultDetail'
-        meta:
-          $ref: '#/components/schemas/BasicMeta'

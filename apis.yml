@@ -188,6 +188,16 @@ apis:
     url: errors/gauntlet-problem-types.yml
   - type: DataModel
     url: data-model/gauntlet-data-model.yml
+- aid: gauntlet:gauntlet-strategies-api
+  name: Gauntlet Strategies API
+  description: The Strategies API from Gauntlet — 1 operation(s) for strategies.
+  humanURL: https://docs.gauntlet.xyz/
+  baseURL: https://api.gauntlet.xyz
+  tags:
+  - Strategies
+  properties:
+  - type: OpenAPI
+    url: openapi/gauntlet-strategies-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
