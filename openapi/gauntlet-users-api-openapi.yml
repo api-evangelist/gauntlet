@@ -666,3 +666,9 @@ components:
         vault_id:
           type: string
           description: CAIP-10 vault identifier this row belongs to. Always emitted.
+x-provenance:
+  method: harvested
+  publisher: Gauntlet
+  source: https://api.gauntlet.xyz/docs/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
